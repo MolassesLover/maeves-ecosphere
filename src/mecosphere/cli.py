@@ -54,10 +54,6 @@ def generate_ecosphere_map(width: int = 64, height: int = 36) -> list:
 
         position_x += 1
 
-    with open("map-initial.csv", "w", newline="") as file_csv:
-        writer = csv.writer(file_csv)
-        writer.writerows(new_map)
-
     return new_map
 
 
@@ -249,10 +245,6 @@ class Ecosphere:
                         component["callback"](entity)
         else:
             print("No more entities, ending simulation.")
-
-            with open("map-final.csv", "w", newline="") as file_csv:
-                writer = csv.writer(file_csv)
-                writer.writerows(self.map)
 
             return 1
 
