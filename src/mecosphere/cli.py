@@ -217,10 +217,6 @@ class Organism:
 
 
 class Ecosphere:
-    """
-    The entire system containing natural resources, entities and viruses.
-    """
-
     def __init__(self):
         self.entities = []  # Set on every update call, do not change manually.
         self.fauna: list = []
