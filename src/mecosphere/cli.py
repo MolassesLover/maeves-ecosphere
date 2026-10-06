@@ -86,9 +86,7 @@ class EcosphereApplication:
         self.pygame_display = pygame.display.set_mode((1024, 576))
 
         self.tile_dirt = pygame.image.load("res/img/dirt.png").convert()
-        self.tile_tree = pygame.image.load("res/img/tree.png").convert()
-        self.tile_isopod = pygame.image.load("res/img/isopod.png").convert()
-
+        
         self.ecosphere = Ecosphere()
 
         self.initialize()
