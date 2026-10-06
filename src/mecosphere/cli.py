@@ -86,7 +86,7 @@ class EcosphereApplication:
         self.pygame_display = pygame.display.set_mode((1024, 576))
 
         self.tile_dirt = pygame.image.load("res/img/dirt.png").convert()
-        
+
         self.ecosphere = Ecosphere()
 
         self.initialize()
@@ -241,8 +241,10 @@ class Ecosphere:
                     # Kill the entity
                     print(f"Organism {entity.name} died.")
 
-                    entity.die()  # Messed up, man. :C
+                    entity.die() # Messed up, man. :C
 
+                    self.map[entity.position[0]][entity.position[1]].occupant = None
+                    
                     self.fauna.remove(entity)
 
                     del entity
