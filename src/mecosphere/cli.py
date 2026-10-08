@@ -2,7 +2,7 @@
 
 """
 A simple ecosphere simulator I made while bored and sick.
-This project uses the terms 'entity' and 'component,' however,
+This project uses the terms 'simulation_object' and 'component,' however,
 please note that this is not an ECS.
 """
 
@@ -175,16 +175,14 @@ class EcosphereApplication:
         for tile, col_index, row_index in ecosphere_map_yield_tile(
             self.ecosphere.map, 64, 36
         ):
-            # print(f"{position_x}, {position_y}")
-            print(f"{col_index}, {row_index}")
             tile = propogated_map[col_index][row_index]
 
             match tile:
                 case 1:
-                    new_tree = Organism(
+                    new_tree = SimulationObject(
                         components=[],
                         domain="flora",
-                        age_maximum=random.randint(128, 256),
+                        age_maximum=random.randint(1825, 3650),
                         name=f"tree",
                         species="tree",
                     )
@@ -197,7 +195,7 @@ class EcosphereApplication:
                         pos_y=row_index,
                     )
 
-                    self.ecosphere.entities.append(new_tree)
+                    self.ecosphere.simulation_objects.append(new_tree)
                 case _:
                     propogated_map[col_index][row_index] = Tile(
                         occupant=None,
@@ -217,7 +215,7 @@ class EcosphereApplication:
         self.ecosphere.map = propogated_map
 
         for i in range(100):
-            isopod = Organism(
+            isopod = SimulationObject(
                 components=[],
                 domain="fauna",
                 age_maximum=random.randint(913, 1825),
@@ -227,7 +225,7 @@ class EcosphereApplication:
 
             isopod.components.append(component_forage)
 
-            self.ecosphere.entities.append(isopod)
+            self.ecosphere.simulation_objects.append(isopod)
             self.ecosphere.map[isopod.position[0]][isopod.position[1]].occupant = isopod
 
 
@@ -235,7 +233,7 @@ class Tile(object):
     __slots__ = ("occupant", "metadata", "pos_x", "pos_y")
 
     def __init__(self, occupant, nutritious, contaminated, pos_x, pos_y):
-        self.occupant: Organism = occupant
+        self.occupant: SimulationObject = occupant
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.metadata = self.metadata_create(nutritious, contaminated)
@@ -246,7 +244,7 @@ class Tile(object):
         return metadata_dictionary
 
 
-class Organism:
+class SimulationObject:
     def __init__(self, name, species, domain, components: list, age_maximum=7):
         self.age_current = 0
         self.age_maximum = age_maximum
@@ -271,7 +269,7 @@ class Organism:
 
 class Ecosphere:
     def __init__(self):
-        self.entities = []  # Set on every update call, do not change manually.
+        self.simulation_objects = []  # Set on every update call, do not change manually.
         self.fauna: list = []
         self.flora: list = []
         self.bacteria: list = []
@@ -280,46 +278,46 @@ class Ecosphere:
         self.map = ecosphere_map_generate()
 
     def update(self) -> int:
-        if self.entities:
+        if self.simulation_objects:
             # Old list may contain out of bounds entitities
-            # We set self.entities to this new list in order to remove them
+            # We set self.simulation_objects to this new list in order to remove them
             new_entities_list = []
 
             for tile, col_index, row_index in ecosphere_map_yield_tile(
                 self.map, 64, 36
             ):
-                entity = tile.occupant
+                simulation_object = tile.occupant
 
-                if entity:
-                    new_entities_list.append(entity)
+                if simulation_object:
+                    new_entities_list.append(simulation_object)
 
-                    if entity.age_current > entity.age_maximum:
-                        if not entity.is_dead:
-                            print(f"Organism {entity.name} died.")
+                    if simulation_object.age_current > simulation_object.age_maximum:
+                        if not simulation_object.is_dead:
+                            print(f"{simulation_object.name} died.")
 
-                            entity.die()  # Messed up, man. :C
+                            simulation_object.die()  # Messed up, man. :C
                         elif (
-                            entity.decomposition_current >= entity.decomposition_maximum
+                            simulation_object.decomposition_current >= simulation_object.decomposition_maximum
                         ):
-                            print(f"Organism {entity.name} decomposed.")
+                            print(f"{simulation_object.name} decomposed.")
 
                             self.map[col_index][row_index].occupant = None
 
-                            self.entities.remove(entity)
+                            self.simulation_objects.remove(simulation_object)
 
-                            del entity
+                            del simulation_object
                         else:
-                            entity.decomposition_current += 1
+                            simulation_object.decomposition_current += 1
                     else:
-                        entity.age_current += 1
+                        simulation_object.age_current += 1
 
-                        if entity.components:
-                            for component in entity.components:
-                                component["callback"](entity)
+                        if simulation_object.components:
+                            for component in simulation_object.components:
+                                component["callback"](simulation_object)
 
-            self.entities = new_entities_list
+            self.simulation_objects = new_entities_list
         else:
-            print("No more entities, ending simulation.")
+            print("No more simulation objects, ending simulation.")
 
             return 1
 
