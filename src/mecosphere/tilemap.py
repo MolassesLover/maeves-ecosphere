@@ -29,10 +29,10 @@ def ecosphere_map_generate(width: int = 64, height: int = 36) -> list:
         new_collumn = []
 
         for row in range(width):
-            place_tree = bool(random.getrandbits(1))
+            place_vegetation = bool(random.getrandbits(1))
 
-            if place_tree:
-                new_collumn.append(1)
+            if place_vegetation:
+                new_collumn.append(random.randint(1, 3))
             else:
                 new_collumn.append(0)
 

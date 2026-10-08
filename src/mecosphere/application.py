@@ -4,6 +4,7 @@ import time
 
 import pygame
 
+from mecosphere import components
 from mecosphere.simulation import *
 from mecosphere.tilemap import *
 
@@ -68,38 +69,6 @@ class EcosphereApplication:
         pygame.quit()
 
     def initialize(self):
-        def forage(entity_instance):
-            position_old_tile = self.ecosphere.map[entity_instance.position[0]][
-                entity_instance.position[1]
-            ]
-
-            position_old_tile.occupant = entity_instance
-
-            position_new = entity_instance.position.copy()
-
-            position_new = [
-                position_new[0] + random.randint(-1, 1),
-                position_new[1] + random.randint(-1, 1),
-            ]
-
-            if position_new[0] > 35 or position_new[0] < 0:
-                return
-            elif position_new[1] > 63 or position_new[1] < 0:
-                return
-            else:
-                position_new_tile = self.ecosphere.map[position_new[0]][position_new[1]]
-
-            if not position_new_tile.occupant:
-                position_old_tile.occupant = None
-
-                entity_instance.position = position_new
-
-                position_new_tile.occupant = entity_instance
-
-        component_forage: dict = create_component(
-            component_name="Foraging", callback=forage
-        )
-
         # Propogation
         print("Propogating ecosphere...")
 
@@ -116,8 +85,44 @@ class EcosphereApplication:
                         components=[],
                         domain="flora",
                         age_maximum=random.randint(1825, 3650),
-                        name=f"tree",
+                        name="tree",
                         species="tree",
+                    )
+
+                    propogated_map[col_index][row_index] = Tile(
+                        occupant=new_tree,
+                        nutritious=False,
+                        contaminated=False,
+                        pos_x=col_index,
+                        pos_y=row_index,
+                    )
+
+                    self.ecosphere.simulation_objects.append(new_tree)
+                case 2:
+                    new_tree = SimulationObject(
+                        components=[],
+                        domain="flora",
+                        age_maximum=random.randint(60, 90),
+                        name="grass",
+                        species="grass",
+                    )
+
+                    propogated_map[col_index][row_index] = Tile(
+                        occupant=new_tree,
+                        nutritious=False,
+                        contaminated=False,
+                        pos_x=col_index,
+                        pos_y=row_index,
+                    )
+
+                    self.ecosphere.simulation_objects.append(new_tree)
+                case 3:
+                    new_tree = SimulationObject(
+                        components=[],
+                        domain="fungus",
+                        age_maximum=random.randint(14, 35),
+                        name=f"mushroom",
+                        species="mushroom",
                     )
 
                     propogated_map[col_index][row_index] = Tile(
@@ -145,7 +150,7 @@ class EcosphereApplication:
 
         self.ecosphere.map = propogated_map
 
-        for i in range(100):
+        for i in range(1):
             isopod = SimulationObject(
                 components=[],
                 domain="fauna",
@@ -154,7 +159,8 @@ class EcosphereApplication:
                 species="isopod",
             )
 
-            isopod.components.append(component_forage)
+            isopod.components.append(components.component_forage)
+            isopod.components.append(components.component_eat)
 
             self.ecosphere.simulation_objects.append(isopod)
             self.ecosphere.map[isopod.position[0]][isopod.position[1]].occupant = isopod

@@ -7,21 +7,6 @@ import pygame
 from mecosphere.tilemap import *
 
 
-def create_component(component_name, callback: callable, is_active=True) -> dict:
-    """
-    A simple constructor for components as dictionaries. This is not an ECS,
-    just borrowing the language.
-    """
-
-    component_dictionary = {
-        "name": component_name,
-        "active": is_active,
-        "callback": callback,
-    }
-
-    return component_dictionary
-
-
 class Tile(object):
     __slots__ = ("occupant", "metadata", "pos_x", "pos_y")
 
@@ -109,7 +94,7 @@ class Ecosphere:
 
                         if simulation_object.components:
                             for component in simulation_object.components:
-                                component["callback"](simulation_object)
+                                component["callback"](simulation_object, self.map)
 
             self.simulation_objects = new_entities_list
         else:
