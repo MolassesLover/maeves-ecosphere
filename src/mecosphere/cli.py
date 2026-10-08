@@ -14,7 +14,21 @@ import time
 import pygame
 
 
-def generate_ecosphere_map(width: int = 64, height: int = 36) -> list:
+def ecosphere_map_yield_tile(ecosphere_map, width: int = 64, height: int = 36):
+    position_x = 0
+    position_y = 0
+
+    for collumn in range(height):
+        for row in range(width):
+            yield ecosphere_map[collumn][row], position_x, position_y
+
+            position_y += 1
+
+        position_y = 0
+        position_x += 1
+
+
+def ecosphere_map_generate(width: int = 64, height: int = 36) -> list:
     print("Generating map...")
     new_map = []
     position_x = 0
@@ -27,28 +41,11 @@ def generate_ecosphere_map(width: int = 64, height: int = 36) -> list:
             place_tree = bool(random.getrandbits(1))
 
             if place_tree:
-                organism_tree = Organism("tree", "tree", "flora", None, 999)
-                tile_tree_instance = Tile(
-                    occupant=organism_tree,
-                    nutritious=True,
-                    contaminated=False,
-                    pos_x=position_x,
-                    pos_y=position_y,
-                )
-
-                new_collumn.append(tile_tree_instance)
+                new_collumn.append(1)
             else:
-                tile_instance = Tile(
-                    occupant=None,
-                    nutritious=False,
-                    contaminated=False,
-                    pos_x=position_x,
-                    pos_y=position_y,
-                )
+                new_collumn.append(0)
 
-                new_collumn.append(tile_instance)
-
-            position_y += 1
+                position_y += 1
 
         new_map.append(new_collumn)
 
@@ -95,13 +92,13 @@ class EcosphereApplication:
             for row in collumn:
                 tile = self.ecosphere.map[col_index][row_index]
 
+                self.pygame_display.blit(
+                    self.tile_dirt, (row_index * 16, col_index * 16)
+                )
+
                 if tile.occupant:
                     self.pygame_display.blit(
                         tile.occupant.image, (row_index * 16, col_index * 16)
-                    )
-                else:
-                    self.pygame_display.blit(
-                        self.tile_dirt, (row_index * 16, col_index * 16)
                     )
 
                 row_index += 1
@@ -113,6 +110,8 @@ class EcosphereApplication:
         print("Running core loop...")
 
         while self.should_run:
+            self.pygame_display.fill((0, 0, 0))
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.should_run = False
@@ -136,6 +135,8 @@ class EcosphereApplication:
             position_old_tile = self.ecosphere.map[entity_instance.position[0]][
                 entity_instance.position[1]
             ]
+
+            # print(self.ecosphere.map)
 
             position_old_tile.occupant = entity_instance
 
@@ -169,6 +170,52 @@ class EcosphereApplication:
         # Propogation
         print("Propogating ecosphere...")
 
+        propogated_map = self.ecosphere.map.copy()
+
+        for tile, col_index, row_index in ecosphere_map_yield_tile(
+            self.ecosphere.map, 64, 36
+        ):
+            # print(f"{position_x}, {position_y}")
+            print(f"{col_index}, {row_index}")
+            tile = propogated_map[col_index][row_index]
+
+            match tile:
+                case 1:
+                    new_tree = Organism(
+                        components=[],
+                        domain="flora",
+                        age_maximum=random.randint(128, 256),
+                        name=f"tree",
+                        species="tree",
+                    )
+
+                    propogated_map[col_index][row_index] = Tile(
+                        occupant=new_tree,
+                        nutritious=False,
+                        contaminated=False,
+                        pos_x=col_index,
+                        pos_y=row_index,
+                    )
+
+                    self.ecosphere.entities.append(new_tree)
+                case _:
+                    propogated_map[col_index][row_index] = Tile(
+                        occupant=None,
+                        nutritious=False,
+                        contaminated=False,
+                        pos_x=col_index,
+                        pos_y=row_index,
+                    )
+
+            row_index += 1
+
+        row_index = 0
+        col_index += 1
+
+        # print(propogated_map)
+
+        self.ecosphere.map = propogated_map
+
         for i in range(100):
             isopod = Organism(
                 components=[],
@@ -177,8 +224,11 @@ class EcosphereApplication:
                 name=f"isopod {i}",
                 species="isopod",
             )
+
             isopod.components.append(component_forage)
-            self.ecosphere.fauna.append(isopod)
+
+            self.ecosphere.entities.append(isopod)
+            self.ecosphere.map[isopod.position[0]][isopod.position[1]].occupant = isopod
 
 
 class Tile(object):
@@ -200,16 +250,23 @@ class Organism:
     def __init__(self, name, species, domain, components: list, age_maximum=7):
         self.age_current = 0
         self.age_maximum = age_maximum
+        self.decomposition_current = 0
+        self.decomposition_maximum = int(round(age_maximum / 2))
         self.components: list = components
         self.name = name
         self.species = species
         self.position = [random.randint(1, 35), random.randint(1, 63)]
         self.domain = domain
-        self.image = pygame.image.load(f"res/img/{species}.png")
-        # self.image_dead = pygame.image.load(f"res/img/{name}-dead.png")
+        self.is_dead = False
+
+        self.image_default = pygame.image.load(f"res/img/{species}.png")
+        self.image_dead = pygame.image.load(f"res/img/{species}-dead.png")
+        self.image = self.image_default
 
     def die(self):
         print(f"{self.name} is now dead.")
+        self.image = self.image_dead
+        self.is_dead = True
 
 
 class Ecosphere:
@@ -220,29 +277,47 @@ class Ecosphere:
         self.bacteria: list = []
         self.viruses: list = []
         self.time = 0.0
-        self.map = generate_ecosphere_map()
+        self.map = ecosphere_map_generate()
 
     def update(self) -> int:
-        self.entities = self.fauna + self.flora + self.bacteria + self.viruses
-
         if self.entities:
-            for entity in self.entities.copy():
-                entity.age_current += 1
+            # Old list may contain out of bounds entitities
+            # We set self.entities to this new list in order to remove them
+            new_entities_list = []
 
-                if entity.age_current > entity.age_maximum:
-                    # Kill the entity
-                    print(f"Organism {entity.name} died.")
+            for tile, col_index, row_index in ecosphere_map_yield_tile(
+                self.map, 64, 36
+            ):
+                entity = tile.occupant
 
-                    entity.die() # Messed up, man. :C
+                if entity:
+                    new_entities_list.append(entity)
 
-                    self.map[entity.position[0]][entity.position[1]].occupant = None
-                    
-                    self.fauna.remove(entity)
+                    if entity.age_current > entity.age_maximum:
+                        if not entity.is_dead:
+                            print(f"Organism {entity.name} died.")
 
-                    del entity
-                else:
-                    for component in entity.components:
-                        component["callback"](entity)
+                            entity.die()  # Messed up, man. :C
+                        elif (
+                            entity.decomposition_current >= entity.decomposition_maximum
+                        ):
+                            print(f"Organism {entity.name} decomposed.")
+
+                            self.map[col_index][row_index].occupant = None
+
+                            self.entities.remove(entity)
+
+                            del entity
+                        else:
+                            entity.decomposition_current += 1
+                    else:
+                        entity.age_current += 1
+
+                        if entity.components:
+                            for component in entity.components:
+                                component["callback"](entity)
+
+            self.entities = new_entities_list
         else:
             print("No more entities, ending simulation.")
 
