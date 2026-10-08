@@ -2,6 +2,8 @@ import sys
 import random
 import time
 
+from mecosphere.simulation import *
+
 
 def create_component(component_name, callback: callable, is_active=True) -> dict:
     """
@@ -18,14 +20,17 @@ def create_component(component_name, callback: callable, is_active=True) -> dict
     return component_dictionary
 
 
-def system_forage(entity_instance, ecosphere_map):
-    position_old_tile = ecosphere_map[entity_instance.position[0]][
-        entity_instance.position[1]
+def system_forage(simobject_instance, component_instance, ecosphere_map):
+    if simobject_instance.is_dead:
+        return
+
+    position_old_tile = ecosphere_map[simobject_instance.position[0]][
+        simobject_instance.position[1]
     ]
 
-    position_old_tile.occupant = entity_instance
+    position_old_tile.occupant = simobject_instance
 
-    position_new = entity_instance.position.copy()
+    position_new = simobject_instance.position.copy()
 
     position_new = [
         position_new[0] + random.randint(-1, 1),
@@ -42,38 +47,37 @@ def system_forage(entity_instance, ecosphere_map):
     if not position_new_tile.occupant:
         position_old_tile.occupant = None
 
-        entity_instance.position = position_new
+        simobject_instance.position = position_new
 
-        position_new_tile.occupant = entity_instance
+        position_new_tile.occupant = simobject_instance
 
 
-def system_eat(entity_instance, ecosphere_map):
-    for x in range(-1, 1):
-        for y in range(-1, 1):
-            check_position_x = entity_instance.position[0] + x
-            check_position_y = entity_instance.position[1] + y
+def system_eat(simobject_instance, component_instance, ecosphere_map):
+    def eat():
+        if (
+            search_tile.occupant.species
+            in simobject_instance.component_data[component_instance["name"]]["diet"]
+        ):
+            print(f"Eating {search_tile.occupant.name}")
+            search_tile.occupant.die()
 
-            print(f"Checking {check_position_x}, {check_position_y} for food")
-
-            if check_position_x > 63:
-                check_position_x = 63
-            elif check_position_x < 0:
-                check_position_x = 0
-
-            if check_position_x > 35:
-                check_position_x = 35
-            elif check_position_x < 0:
-                check_position_x = 0
-
-            search_tile = ecosphere_map[check_position_x][check_position_y]
-
-            if search_tile.occupant:
-                if not search_tile.occupant == entity_instance:
-                    print(f"Eating {search_tile.occupant.name}")
+    for search_tile in simulation_object_yield_tile_neighbour(
+        simobject_instance, ecosphere_map
+    ):
+        if search_tile.occupant:
+            if search_tile.occupant == simobject_instance:
+                return
+            elif search_tile.occupant.species == simobject_instance.species:
+                return
+            else:
+                eat()
 
 
 component_forage: dict = create_component(
     component_name="Foraging", callback=system_forage
 )
 
-component_eat: dict = create_component(component_name="Eating", callback=system_eat)
+component_eat: dict = create_component(
+    component_name="Eating",
+    callback=system_eat,
+)

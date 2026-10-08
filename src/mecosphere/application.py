@@ -102,7 +102,7 @@ class EcosphereApplication:
                     new_tree = SimulationObject(
                         components=[],
                         domain="flora",
-                        age_maximum=random.randint(60, 90),
+                        age_maximum=random.randint(120, 270),
                         name="grass",
                         species="grass",
                     )
@@ -120,7 +120,7 @@ class EcosphereApplication:
                     new_tree = SimulationObject(
                         components=[],
                         domain="fungus",
-                        age_maximum=random.randint(14, 35),
+                        age_maximum=random.randint(60, 240),
                         name=f"mushroom",
                         species="mushroom",
                     )
@@ -150,13 +150,16 @@ class EcosphereApplication:
 
         self.ecosphere.map = propogated_map
 
-        for i in range(1):
+        for i in range(100):
             isopod = SimulationObject(
                 components=[],
                 domain="fauna",
                 age_maximum=random.randint(913, 1825),
                 name=f"isopod {i}",
                 species="isopod",
+                component_data={
+                    "Eating": {"diet": ["grass", "mushroom"]},
+                },
             )
 
             isopod.components.append(components.component_forage)

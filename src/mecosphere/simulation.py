@@ -23,7 +23,7 @@ class Tile(object):
 
 
 class SimulationObject:
-    def __init__(self, name, species, domain, components: list, age_maximum=7):
+    def __init__(self, name, species, domain, components: list, age_maximum=7, component_data={}):
         self.age_current = 0
         self.age_maximum = age_maximum
         self.decomposition_current = 0
@@ -38,6 +38,12 @@ class SimulationObject:
         self.image_default = pygame.image.load(f"res/img/{species}.png")
         self.image_dead = pygame.image.load(f"res/img/{species}-dead.png")
         self.image = self.image_default
+
+        # `self.component_data`` is a dict of component names matched to any other child dict
+        # Example:
+        # { "Eating": { "diet": [ "grass", "mushroom" ] }, }
+
+        self.component_data = component_data
 
     def die(self):
         print(f"{self.name} is now dead.")
@@ -94,7 +100,9 @@ class Ecosphere:
 
                         if simulation_object.components:
                             for component in simulation_object.components:
-                                component["callback"](simulation_object, self.map)
+                                component["callback"](
+                                    simulation_object, component, self.map
+                                )
 
             self.simulation_objects = new_entities_list
         else:
