@@ -4,7 +4,7 @@ import time
 
 import pygame
 
-from tilemap import *
+from mecosphere.tilemap import *
 
 
 def create_component(component_name, callback: callable, is_active=True) -> dict:

@@ -4,8 +4,8 @@ import time
 
 import pygame
 
-from simulation import *
-from tilemap import *
+from mecosphere.simulation import *
+from mecosphere.tilemap import *
 
 
 class EcosphereApplication:

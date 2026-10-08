@@ -13,9 +13,9 @@ import time
 
 import pygame
 
-from application import *
-from simulation import *
-from tilemap import *
+from mecosphere.application import *
+from mecosphere.simulation import *
+from mecosphere.tilemap import *
 
 
 def main():

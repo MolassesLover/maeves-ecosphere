@@ -1,0 +1,11 @@
+[project]
+name = "maeves-ecosphere"
+version = "0.1.0"
+description = "A tile-based procedural ecosystem simulation, with an object component system."
+
+authors = [
+    {name = "MolassesLover"}
+]
+
+[project.scripts]
+maeves-ecosphere = "mecosphere:cli.main"
