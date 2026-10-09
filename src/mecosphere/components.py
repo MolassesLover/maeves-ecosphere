@@ -21,7 +21,35 @@ def create_component(component_name, callback: callable, is_active=True) -> dict
     return component_dictionary
 
 
+def system_age(simobject_instance, component_instance, ecosphere_map):
+    if simobject_instance.is_dead:
+        return
+
+    age_current = simobject_instance.age_current
+    age_baby = simobject_instance.component_data["Aging"]["age_baby"]
+    age_adult = simobject_instance.component_data["Aging"]["age_adult"]
+
+    if age_current < age_baby:
+        simobject_instance.image = simobject_instance.image_egg
+        simobject_instance.component_data["Aging"]["is_egg"] = True
+        simobject_instance.component_data["Aging"]["is_baby"] = False
+    elif age_current > age_adult:
+        simobject_instance.image = simobject_instance.image_default
+        simobject_instance.component_data["Aging"]["is_egg"] = False
+        simobject_instance.component_data["Aging"]["is_baby"] = False
+    elif age_current > age_baby and age_current < age_adult:
+        simobject_instance.image = simobject_instance.image_baby
+        simobject_instance.component_data["Aging"]["is_egg"] = False
+        simobject_instance.component_data["Aging"]["is_baby"] = True
+    else:
+        simobject_instance.image = simobject_instance.image_default
+
+
 def system_forage(simobject_instance, component_instance, ecosphere_map):
+    if "Aging" in simobject_instance.component_data:
+        if simobject_instance.component_data["Aging"]["is_egg"]:
+            return
+
     position_old_tile = ecosphere_map[simobject_instance.position[0]][
         simobject_instance.position[1]
     ]
@@ -87,37 +115,55 @@ def system_eat(simobject_instance, component_instance, ecosphere_map):
                 ] = 0
 
 
+def is_hungry(_simobject_instance):
+    hungry = False
+
+    if "Eating" in _simobject_instance.component_data:
+        hunger = _simobject_instance.component_data["Eating"]["hunger"]
+        hunger_max = _simobject_instance.component_data["Eating"]["hunger_max"]
+
+        if hunger > (int(round(hunger_max / 2))):
+            hungry = True
+            return hungry
+
+    return hungry
+
+
 def system_reproduce_sexual_direct(
     simobject_instance, component_instance, ecosphere_map
 ):
-    def is_hungry(_simobject_instance):
-        if "Eating" in _simobject_instance.component_data:
-            hunger = _simobject_instance.component_data["Eating"]["hunger"]
-            hunger_max = _simobject_instance.component_data["Eating"]["hunger_max"]
-
-            if hunger > (int(round(hunger_max / 2))):
-                return False
-
-        return True
-
     reproduction_partner = None
 
-    print("baby stuff")
+    if "Aging" in simobject_instance.component_data:
+        if simobject_instance.component_data["Aging"]["is_egg"]:
+            print("Egg")
+            return
+        elif simobject_instance.component_data["Aging"]["is_baby"]:
+            print("Baby")
+            return
 
     if is_hungry(simobject_instance):
         print(f"{simobject_instance.name} is too hungry to make a baby.")
         return
+    else:
+        print(f"{simobject_instance.component_data['Eating']['hunger']} is ok to make a baby.")
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
         simobject_instance, ecosphere_map
     ):
         if search_tile.occupant:
             if not search_tile.occupant == simobject_instance:
+                print("Tile has an occupant")
+
                 if not search_tile.occupant.is_dead:
                     reproduction_partner = search_tile.occupant
                     break
+        else:
+            print("Search tile does not have an occupant")
 
     if reproduction_partner:
+        print(f"Found partner {reproduction_partner.name}")
+
         if is_hungry(reproduction_partner):
             print(
                 f"Partner of {simobject_instance.name}, {reproduction_partner.name}, is too hungry to make a baby."
@@ -130,12 +176,17 @@ def system_reproduce_sexual_direct(
                 if not search_tile.occupant:
                     baby = copy.deepcopy(simobject_instance)  # Awww they're so alike
 
-                    baby_hunger_max = baby.component_data["Eating"]["hunger_max"]
+                    baby.is_egg = True
+                    baby.is_baby = False
 
-                    # Set the baby's hunger to 1/4 max hunger
-                    baby.component_data["Eating"]["hunger"] = int(
-                        round(baby_hunger_max / 4)
-                    )
+                    if "Eating" in baby.component_data:
+                        baby_hunger_max = baby.component_data["Eating"]["hunger_max"]
+
+                        # Set the baby's hunger to 1/4 max hunger
+                        baby.component_data["Eating"]["hunger"] = int(
+                            round(baby_hunger_max / 4)
+                        )
+
                     baby.age_current = 0
 
                     ecosphere_map[pos_x][pos_y].occupant = baby
@@ -174,4 +225,9 @@ component_eat: dict = create_component(
 component_reproduce_sexual_direct: dict = create_component(
     component_name="ReproducingSexuallyDirectly",
     callback=system_reproduce_sexual_direct,
+)
+
+component_age: dict = create_component(
+    component_name="Aging",
+    callback=system_age,
 )

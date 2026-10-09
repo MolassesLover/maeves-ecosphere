@@ -150,7 +150,7 @@ class EcosphereApplication:
 
         self.ecosphere.map = propogated_map
 
-        for i in range(100):
+        for i in range(200):
             isopod = SimulationObject(
                 components=[],
                 domain="fauna",
@@ -161,13 +161,23 @@ class EcosphereApplication:
                     "Eating": {
                         "diet": ["grass", "mushroom"],
                         "hunger": 0,
-                        "hunger_max": 30,
+                        "hunger_max": 120,
+                    },
+                    "Aging": {
+                        "is_egg": True,
+                        "is_baby": False,
+                        "age_baby": 30,
+                        "age_adult": 60,
                     },
                 },
+                images={"image_baby": "isopod-baby"},
             )
+
+            isopod.image = isopod.image_baby
 
             isopod.components.append(components.component_forage)
             isopod.components.append(components.component_eat)
+            isopod.components.append(components.component_age)
             isopod.components.append(components.component_reproduce_sexual_direct)
 
             self.ecosphere.simulation_objects.append(isopod)

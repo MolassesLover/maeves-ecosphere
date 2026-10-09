@@ -24,7 +24,14 @@ class Tile(object):
 
 class SimulationObject:
     def __init__(
-        self, name, species, domain, components: list, age_maximum=7, component_data={}
+        self,
+        name,
+        species,
+        domain,
+        components: list,
+        age_maximum=7,
+        component_data={},
+        images={},
     ):
         self.age_current = 0
         self.age_maximum = age_maximum
@@ -38,7 +45,13 @@ class SimulationObject:
         self.is_dead = False
 
         self.image_default = pygame.image.load(f"res/img/{species}.png")
+        self.image_egg = pygame.image.load(f"res/img/egg.png")
         self.image_dead = pygame.image.load(f"res/img/{species}-dead.png")
+        self.image_baby = self.image_default
+
+        if "image_baby" in images:
+            self.image_baby = pygame.image.load(f"res/img/{images['image_baby']}.png")
+
         self.image = self.image_default
 
         # `self.component_data`` is a dict of component names matched to any other child dict
@@ -48,7 +61,7 @@ class SimulationObject:
         self.component_data = component_data
 
     def die(self):
-        print(f"{self.name} is now dead.")
+        # print(f"{self.name} is now dead.")
         self.image = self.image_dead
         self.is_dead = True
 
@@ -81,14 +94,14 @@ class Ecosphere:
 
                     if simulation_object.age_current > simulation_object.age_maximum:
                         if not simulation_object.is_dead:
-                            print(f"{simulation_object.name} died.")
+                            # print(f"{simulation_object.name} died.")
 
                             simulation_object.die()  # Messed up, man. :C
                         elif (
                             simulation_object.decomposition_current
                             >= simulation_object.decomposition_maximum
                         ):
-                            print(f"{simulation_object.name} decomposed.")
+                            # print(f"{simulation_object.name} decomposed.")
 
                             self.map[col_index][row_index].occupant = None
 
