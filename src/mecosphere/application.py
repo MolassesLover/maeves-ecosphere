@@ -16,7 +16,7 @@ class EcosphereApplication:
 
         pygame.init()
 
-        self.pygame_display = pygame.display.set_mode((1024, 576))
+        self.pygame_display = pygame.display.set_mode((2048, 1152))
 
         self.tile_dirt = pygame.image.load("res/img/dirt.png").convert()
 
@@ -64,7 +64,7 @@ class EcosphereApplication:
 
                 pygame.display.flip()
 
-            time.sleep(0.1666)
+            # time.sleep(0.1666)
 
         pygame.quit()
 
@@ -75,7 +75,7 @@ class EcosphereApplication:
         propogated_map = self.ecosphere.map.copy()
 
         for tile, col_index, row_index in ecosphere_map_yield_tile(
-            self.ecosphere.map, 64, 36
+            self.ecosphere.map, 128, 72
         ):
             tile = propogated_map[col_index][row_index]
 
@@ -84,7 +84,7 @@ class EcosphereApplication:
                     new_tree = SimulationObject(
                         components=[],
                         domain="flora",
-                        age_maximum=random.randint(1825, 3650),
+                        age_maximum=random.randint(1825, 7250),
                         name="tree",
                         species="tree",
                         images={"image_egg": "seed"},

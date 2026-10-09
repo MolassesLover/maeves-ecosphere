@@ -13,13 +13,13 @@ def simulation_object_yield_tile_neighbour(_simobject_instance, _ecosphere_map):
 
             # print(f"Checking {check_position_x}, {check_position_y} for food")
 
-            if check_position_x > 63:
-                check_position_x = 63
+            if check_position_x > 127:
+                check_position_x = 127
             elif check_position_x < 0:
                 check_position_x = 0
 
-            if check_position_x > 35:
-                check_position_x = 35
+            if check_position_x > 71:
+                check_position_x = 71
             elif check_position_x < 0:
                 check_position_x = 0
 
@@ -28,7 +28,7 @@ def simulation_object_yield_tile_neighbour(_simobject_instance, _ecosphere_map):
             yield tile, check_position_x, check_position_y
 
 
-def ecosphere_map_yield_tile(ecosphere_map, width: int = 64, height: int = 36):
+def ecosphere_map_yield_tile(ecosphere_map, width: int = 128, height: int = 72):
     position_x = 0
     position_y = 0
 
@@ -42,7 +42,7 @@ def ecosphere_map_yield_tile(ecosphere_map, width: int = 64, height: int = 36):
         position_x += 1
 
 
-def ecosphere_map_generate(width: int = 64, height: int = 36) -> list:
+def ecosphere_map_generate(width: int = 128, height: int = 72) -> list:
     print("Generating map...")
     new_map = []
     position_x = 0

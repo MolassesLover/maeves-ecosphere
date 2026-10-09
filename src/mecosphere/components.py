@@ -63,9 +63,9 @@ def system_forage(simobject_instance, component_instance, ecosphere_map):
         position_new[1] + random.randint(-1, 1),
     ]
 
-    if position_new[0] > 35 or position_new[0] < 0:
+    if position_new[0] > 71 or position_new[0] < 0:
         return
-    elif position_new[1] > 63 or position_new[1] < 0:
+    elif position_new[1] > 127 or position_new[1] < 0:
         return
     else:
         position_new_tile = ecosphere_map[position_new[0]][position_new[1]]
@@ -175,7 +175,7 @@ def system_reproduce_sexual_direct(
             for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
                 simobject_instance, ecosphere_map
             ):
-                if not search_tile.occupant:
+                if not search_tile.occupant and not search_tile.metadata['contaminated']:
                     baby = copy.deepcopy(simobject_instance)  # Awww they're so alike
 
                     baby.is_egg = True
@@ -237,10 +237,11 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
             elif not search_tile.occupant.is_dead:
                 return
             elif search_tile.occupant.species == simobject_instance.species:
-                print("Tile is of the same species")
                 return
             else:
                 print("Replacing dead occupant with clone")
+                
+            break
  
     clone = copy.deepcopy(simobject_instance)  # Propogation
 
@@ -250,6 +251,10 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
     clone.age_current = 0
 
     ecosphere_map[pos_x][pos_y].occupant = clone
+
+    if search_tile.metadata['contaminated']:
+        print(f"Tile at (x{pos_x}, y{pos_y}) is no longer contaminated") 
+        ecosphere_map[pos_x][pos_y].metadata['contaminated'] = False
 
     print(f"Clone was propogated to (x{pos_x}, y{pos_y})")
 

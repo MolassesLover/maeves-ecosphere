@@ -36,11 +36,11 @@ class SimulationObject:
         self.age_current = 0
         self.age_maximum = age_maximum
         self.decomposition_current = 0
-        self.decomposition_maximum = int(round(age_maximum / 16))
+        self.decomposition_maximum = int(round(age_maximum / 8))
         self.components: list = components
         self.name = name
         self.species = species
-        self.position = [random.randint(1, 35), random.randint(1, 63)]
+        self.position = [random.randint(1, 71), random.randint(1, 127)]
         self.domain = domain
         self.is_dead = False
 
@@ -87,7 +87,7 @@ class Ecosphere:
             new_entities_list = []
 
             for tile, col_index, row_index in ecosphere_map_yield_tile(
-                self.map, 64, 36
+                self.map, 128, 72
             ):
                 simulation_object = tile.occupant
 
@@ -104,6 +104,9 @@ class Ecosphere:
                             >= simulation_object.decomposition_maximum
                         ):
                             # print(f"{simulation_object.name} decomposed.")
+                            
+                            if simulation_object.species == "fauna":
+                                self.map[col_index][row_index].contaminated = True
 
                             self.map[col_index][row_index].occupant = None
 
