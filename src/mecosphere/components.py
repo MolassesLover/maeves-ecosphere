@@ -82,17 +82,22 @@ def system_eat(simobject_instance, component_instance, ecosphere_map):
                 return
             else:
                 eat()
-                simobject_instance.component_data[component_instance["name"]]["hunger"] = 0
+                simobject_instance.component_data[component_instance["name"]][
+                    "hunger"
+                ] = 0
 
-def system_reproduce_sexual_direct(simobject_instance, component_instance, ecosphere_map):
+
+def system_reproduce_sexual_direct(
+    simobject_instance, component_instance, ecosphere_map
+):
     def is_hungry(_simobject_instance):
         if "Eating" in _simobject_instance.component_data:
             hunger = _simobject_instance.component_data["Eating"]["hunger"]
             hunger_max = _simobject_instance.component_data["Eating"]["hunger_max"]
 
-            if hunger > (int(round(hunger_max/2))):
+            if hunger > (int(round(hunger_max / 2))):
                 return False
-            
+
         return True
 
     reproduction_partner = None
@@ -110,27 +115,51 @@ def system_reproduce_sexual_direct(simobject_instance, component_instance, ecosp
             if not search_tile.occupant == simobject_instance:
                 reproduction_partner = search_tile.occupant
                 break
-    
+
     if reproduction_partner:
         if is_hungry(reproduction_partner):
-            print(f"Partner of {simobject_instance.name}, {reproduction_partner.name}, is too hungry to make a baby.")
+            print(
+                f"Partner of {simobject_instance.name}, {reproduction_partner.name}, is too hungry to make a baby."
+            )
             return
         else:
             for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
                 simobject_instance, ecosphere_map
             ):
                 if not search_tile.occupant:
-                    baby = copy.deepcopy(simobject_instance) # Awww they're so alike
+                    baby = copy.deepcopy(simobject_instance)  # Awww they're so alike
 
                     baby_hunger_max = baby.component_data["Eating"]["hunger_max"]
 
                     # Set the baby's hunger to 1/4 max hunger
-                    baby.component_data["Eating"]["hunger"] = int(round(baby_hunger_max/4))
+                    baby.component_data["Eating"]["hunger"] = int(
+                        round(baby_hunger_max / 4)
+                    )
                     baby.age_current = 0
 
                     ecosphere_map[pos_x][pos_y].occupant = baby
 
+                    if "Eating" in search_tile.occupant.component_data:
+                        search_tile.occupant.component_data["Eating"]["hunger"] += int(
+                            round(
+                                search_tile.occupant.component_data["Eating"][
+                                    "hunger_max"
+                                ]
+                                / 3
+                            )
+                        )
+                    if "Eating" in simobject_instance.component_data:
+                        simobject_instance.component_data["Eating"]["hunger"] += int(
+                            round(
+                                simobject_instance.component_data["Eating"][
+                                    "hunger_max"
+                                ]
+                                / 2
+                            )
+                        )
+
                     print(f"Baby was born at (x{pos_x}, y{pos_y})")
+
 
 component_forage: dict = create_component(
     component_name="Foraging", callback=system_forage
