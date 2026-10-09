@@ -146,7 +146,9 @@ def system_reproduce_sexual_direct(
         print(f"{simobject_instance.name} is too hungry to make a baby.")
         return
     else:
-        print(f"{simobject_instance.component_data['Eating']['hunger']} is ok to make a baby.")
+        print(
+            f"{simobject_instance.component_data['Eating']['hunger']} is ok to make a baby."
+        )
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
         simobject_instance, ecosphere_map
