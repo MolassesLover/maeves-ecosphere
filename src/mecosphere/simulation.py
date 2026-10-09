@@ -23,7 +23,9 @@ class Tile(object):
 
 
 class SimulationObject:
-    def __init__(self, name, species, domain, components: list, age_maximum=7, component_data={}):
+    def __init__(
+        self, name, species, domain, components: list, age_maximum=7, component_data={}
+    ):
         self.age_current = 0
         self.age_maximum = age_maximum
         self.decomposition_current = 0
@@ -98,7 +100,10 @@ class Ecosphere:
                     else:
                         simulation_object.age_current += 1
 
-                        if simulation_object.components:
+                        if (
+                            simulation_object.components
+                            and not simulation_object.is_dead
+                        ):
                             for component in simulation_object.components:
                                 component["callback"](
                                     simulation_object, component, self.map

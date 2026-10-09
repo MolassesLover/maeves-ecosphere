@@ -158,12 +158,17 @@ class EcosphereApplication:
                 name=f"isopod {i}",
                 species="isopod",
                 component_data={
-                    "Eating": {"diet": ["grass", "mushroom"]},
+                    "Eating": {
+                        "diet": ["grass", "mushroom"],
+                        "hunger": 0,
+                        "hunger_max": 30,
+                    },
                 },
             )
 
             isopod.components.append(components.component_forage)
             isopod.components.append(components.component_eat)
+            isopod.components.append(components.component_reproduce_sexual_direct)
 
             self.ecosphere.simulation_objects.append(isopod)
             self.ecosphere.map[isopod.position[0]][isopod.position[1]].occupant = isopod

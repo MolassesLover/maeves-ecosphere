@@ -25,7 +25,7 @@ def simulation_object_yield_tile_neighbour(_simobject_instance, _ecosphere_map):
 
             tile = _ecosphere_map[check_position_x][check_position_y]
 
-            yield tile
+            yield tile, check_position_x, check_position_y
 
 
 def ecosphere_map_yield_tile(ecosphere_map, width: int = 64, height: int = 36):
