@@ -113,8 +113,9 @@ def system_reproduce_sexual_direct(
     ):
         if search_tile.occupant:
             if not search_tile.occupant == simobject_instance:
-                reproduction_partner = search_tile.occupant
-                break
+                if not search_tile.occupant.is_dead:
+                    reproduction_partner = search_tile.occupant
+                    break
 
     if reproduction_partner:
         if is_hungry(reproduction_partner):
