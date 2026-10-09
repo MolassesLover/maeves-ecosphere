@@ -79,105 +79,104 @@ class EcosphereApplication:
         ):
             tile = propogated_map[col_index][row_index]
 
-            match tile:
-                case 1:
-                    new_tree = SimulationObject(
-                        components=[],
-                        domain="flora",
-                        age_maximum=random.randint(1825, 7250),
-                        name="tree",
-                        species="tree",
-                        images={"image_egg": "seed"},
-                        component_data={
-                            "Aging": {
-                                "is_egg": False,
-                                "is_baby": False,
-                                "age_baby": 30,
-                                "age_adult": 60,
-                            },
+            if tile == 1:
+                new_tree = SimulationObject(
+                    components=[],
+                    domain="flora",
+                    age_maximum=random.randint(1825, 7250),
+                    name="tree",
+                    species="tree",
+                    images={"image_egg": "seed"},
+                    component_data={
+                        "Aging": {
+                            "is_egg": False,
+                            "is_baby": False,
+                            "age_baby": 30,
+                            "age_adult": 60,
                         },
-                    )
+                    },
+                )
 
-                    new_tree.components.append(components.component_age)
-                    new_tree.components.append(components.component_reproduce_asexual)
+                new_tree.components.append(components.component_age)
+                new_tree.components.append(components.component_reproduce_asexual)
 
-                    propogated_map[col_index][row_index] = Tile(
-                        occupant=new_tree,
-                        nutritious=False,
-                        contaminated=False,
-                        pos_x=col_index,
-                        pos_y=row_index,
-                    )
+                propogated_map[col_index][row_index] = Tile(
+                    occupant=new_tree,
+                    nutritious=False,
+                    contaminated=False,
+                    pos_x=col_index,
+                    pos_y=row_index,
+                )
 
-                    self.ecosphere.simulation_objects.append(new_tree)
-                case 2:
-                    new_tree = SimulationObject(
-                        components=[],
-                        domain="flora",
-                        age_maximum=random.randint(120, 270),
-                        name="grass",
-                        species="grass",
-                        images={"image_egg": "seed"},
-                        component_data={
-                            "Aging": {
-                                "is_egg": False,
-                                "is_baby": False,
-                                "age_baby": 60,
-                                "age_adult": 180,
-                            },
+                self.ecosphere.simulation_objects.append(new_tree)
+            elif tile == 2:
+                new_tree = SimulationObject(
+                    components=[],
+                    domain="flora",
+                    age_maximum=random.randint(120, 270),
+                    name="grass",
+                    species="grass",
+                    images={"image_egg": "seed"},
+                    component_data={
+                        "Aging": {
+                            "is_egg": False,
+                            "is_baby": False,
+                            "age_baby": 60,
+                            "age_adult": 180,
                         },
-                    )
+                    },
+                )
 
-                    new_tree.components.append(components.component_age)
-                    new_tree.components.append(components.component_reproduce_asexual)
+                new_tree.components.append(components.component_age)
+                new_tree.components.append(components.component_reproduce_asexual)
 
-                    propogated_map[col_index][row_index] = Tile(
-                        occupant=new_tree,
-                        nutritious=False,
-                        contaminated=False,
-                        pos_x=col_index,
-                        pos_y=row_index,
-                    )
+                propogated_map[col_index][row_index] = Tile(
+                    occupant=new_tree,
+                    nutritious=False,
+                    contaminated=False,
+                    pos_x=col_index,
+                    pos_y=row_index,
+                )
 
-                    self.ecosphere.simulation_objects.append(new_tree)
-                case 3:
-                    new_tree = SimulationObject(
-                        components=[],
-                        domain="fungus",
-                        age_maximum=random.randint(60, 240),
-                        name=f"mushroom",
-                        species="mushroom",
-                        images={"image_egg": "seed"},
-                        component_data={
-                            "Aging": {
-                                "is_egg": False,
-                                "is_baby": False,
-                                "age_baby": 60,
-                                "age_adult": 180,
-                            },
+                self.ecosphere.simulation_objects.append(new_tree)
+            elif tile == 3:
+                new_tree = SimulationObject(
+                    components=[],
+                    domain="fungus",
+                    age_maximum=random.randint(60, 240),
+                    name=f"mushroom",
+                    species="mushroom",
+                    images={"image_egg": "seed"},
+                    component_data={
+                        "Aging": {
+                            "is_egg": False,
+                            "is_baby": False,
+                            "age_baby": 60,
+                            "age_adult": 180,
                         },
-                    )
+                    },
+                )
 
-                    new_tree.components.append(components.component_age)
-                    new_tree.components.append(components.component_reproduce_asexual)
+                new_tree.components.append(components.component_age)
+                new_tree.components.append(components.component_reproduce_asexual)
 
-                    propogated_map[col_index][row_index] = Tile(
-                        occupant=new_tree,
-                        nutritious=False,
-                        contaminated=False,
-                        pos_x=col_index,
-                        pos_y=row_index,
-                    )
+                propogated_map[col_index][row_index] = Tile(
+                    occupant=new_tree,
+                    nutritious=False,
+                    contaminated=False,
+                    pos_x=col_index,
+                    pos_y=row_index,
+                )
 
-                    self.ecosphere.simulation_objects.append(new_tree)
-                case _:
-                    propogated_map[col_index][row_index] = Tile(
-                        occupant=None,
-                        nutritious=False,
-                        contaminated=False,
-                        pos_x=col_index,
-                        pos_y=row_index,
-                    )
+                self.ecosphere.simulation_objects.append(new_tree)
+            else:
+                propogated_map[col_index][row_index] = Tile(
+                    occupant=None,
+                    nutritious=False,
+                    contaminated=False,
+                    pos_x=col_index,
+                    pos_y=row_index,
+                )
 
             row_index += 1
 

@@ -8,6 +8,10 @@ buildPythonApplication {
   pname = "maeves-ecosphere";
   version = "0.1.0";
 
+  buildInputs = [
+    cython
+  ];
+
   propagatedBuildInputs = [
 	  pygame
   ];

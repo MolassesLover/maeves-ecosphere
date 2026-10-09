@@ -9,3 +9,16 @@ authors = [
 
 [project.scripts]
 maeves-ecosphere = "mecosphere:cli.main"
+
+[build-system]
+requires = ["setuptools", "cython"]
+
+[tool.setuptools]
+ext-modules = [
+  { name = "mecosphere", sources = [
+    "src/mecosphere/application.py",
+    "src/mecosphere/components.py",
+    "src/mecosphere/simulation.py",
+    "src/mecosphere/tilemap.py"
+  ] }
+]

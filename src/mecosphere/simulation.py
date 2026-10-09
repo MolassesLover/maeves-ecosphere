@@ -104,7 +104,7 @@ class Ecosphere:
                             >= simulation_object.decomposition_maximum
                         ):
                             # print(f"{simulation_object.name} decomposed.")
-                            
+
                             if simulation_object.species == "fauna":
                                 self.map[col_index][row_index].contaminated = True
 

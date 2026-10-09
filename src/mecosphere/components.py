@@ -175,7 +175,10 @@ def system_reproduce_sexual_direct(
             for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
                 simobject_instance, ecosphere_map
             ):
-                if not search_tile.occupant and not search_tile.metadata['contaminated']:
+                if (
+                    not search_tile.occupant
+                    and not search_tile.metadata["contaminated"]
+                ):
                     baby = copy.deepcopy(simobject_instance)  # Awww they're so alike
 
                     baby.is_egg = True
@@ -240,9 +243,9 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
                 return
             else:
                 print("Replacing dead occupant with clone")
-                
+
             break
- 
+
     clone = copy.deepcopy(simobject_instance)  # Propogation
 
     clone.is_egg = True
@@ -252,9 +255,9 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
 
     ecosphere_map[pos_x][pos_y].occupant = clone
 
-    if search_tile.metadata['contaminated']:
-        print(f"Tile at (x{pos_x}, y{pos_y}) is no longer contaminated") 
-        ecosphere_map[pos_x][pos_y].metadata['contaminated'] = False
+    if search_tile.metadata["contaminated"]:
+        print(f"Tile at (x{pos_x}, y{pos_y}) is no longer contaminated")
+        ecosphere_map[pos_x][pos_y].metadata["contaminated"] = False
 
     print(f"Clone was propogated to (x{pos_x}, y{pos_y})")
 
