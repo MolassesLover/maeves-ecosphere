@@ -51,6 +51,8 @@ class SimulationObject:
 
         if "image_baby" in images:
             self.image_baby = pygame.image.load(f"res/img/{images['image_baby']}.png")
+        elif "image_egg" in images:
+            self.image_egg = pygame.image.load(f"res/img/{images['image_egg']}.png")
 
         self.image = self.image_default
 

@@ -33,7 +33,7 @@ def system_age(simobject_instance, component_instance, ecosphere_map):
         simobject_instance.image = simobject_instance.image_egg
         simobject_instance.component_data["Aging"]["is_egg"] = True
         simobject_instance.component_data["Aging"]["is_baby"] = False
-    elif age_current > age_adult:
+    elif age_current >= age_adult:
         simobject_instance.image = simobject_instance.image_default
         simobject_instance.component_data["Aging"]["is_egg"] = False
         simobject_instance.component_data["Aging"]["is_baby"] = False
@@ -215,6 +215,45 @@ def system_reproduce_sexual_direct(
                     print(f"Baby was born at (x{pos_x}, y{pos_y})")
 
 
+def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_map):
+    reproduction_partner = None
+
+    if "Aging" in simobject_instance.component_data:
+        if simobject_instance.component_data["Aging"]["is_egg"]:
+            print(f"{simobject_instance.name} is too egg to make a baby.")
+            return
+        if simobject_instance.component_data["Aging"]["is_baby"]:
+            print(
+                f"{simobject_instance.name} is too baby at age {simobject_instance.age_current} to make a baby."
+            )
+            return
+
+    for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
+        simobject_instance, ecosphere_map
+    ):
+        if search_tile.occupant:
+            if search_tile.occupant == simobject_instance:
+                return
+            elif not search_tile.occupant.is_dead:
+                return
+            elif search_tile.occupant.species == simobject_instance.species:
+                print("Tile is of the same species")
+                return
+            else:
+                print("Replacing dead occupant with clone")
+ 
+    clone = copy.deepcopy(simobject_instance)  # Propogation
+
+    clone.is_egg = True
+    clone.is_baby = False
+
+    clone.age_current = 0
+
+    ecosphere_map[pos_x][pos_y].occupant = clone
+
+    print(f"Clone was propogated to (x{pos_x}, y{pos_y})")
+
+
 component_forage: dict = create_component(
     component_name="Foraging", callback=system_forage
 )
@@ -227,6 +266,11 @@ component_eat: dict = create_component(
 component_reproduce_sexual_direct: dict = create_component(
     component_name="ReproducingSexuallyDirectly",
     callback=system_reproduce_sexual_direct,
+)
+
+component_reproduce_asexual: dict = create_component(
+    component_name="ReproducingAsexually",
+    callback=system_reproduce_asexual,
 )
 
 component_age: dict = create_component(

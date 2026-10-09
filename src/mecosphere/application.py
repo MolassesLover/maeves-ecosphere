@@ -64,7 +64,7 @@ class EcosphereApplication:
 
                 pygame.display.flip()
 
-            time.sleep(0.01666)
+            time.sleep(0.1666)
 
         pygame.quit()
 
@@ -87,7 +87,19 @@ class EcosphereApplication:
                         age_maximum=random.randint(1825, 3650),
                         name="tree",
                         species="tree",
+                        images={"image_egg": "seed"},
+                        component_data={
+                            "Aging": {
+                                "is_egg": False,
+                                "is_baby": False,
+                                "age_baby": 30,
+                                "age_adult": 60,
+                            },
+                        },
                     )
+
+                    new_tree.components.append(components.component_age)
+                    new_tree.components.append(components.component_reproduce_asexual)
 
                     propogated_map[col_index][row_index] = Tile(
                         occupant=new_tree,
@@ -105,7 +117,19 @@ class EcosphereApplication:
                         age_maximum=random.randint(120, 270),
                         name="grass",
                         species="grass",
+                        images={"image_egg": "seed"},
+                        component_data={
+                            "Aging": {
+                                "is_egg": False,
+                                "is_baby": False,
+                                "age_baby": 60,
+                                "age_adult": 180,
+                            },
+                        },
                     )
+
+                    new_tree.components.append(components.component_age)
+                    new_tree.components.append(components.component_reproduce_asexual)
 
                     propogated_map[col_index][row_index] = Tile(
                         occupant=new_tree,
@@ -123,7 +147,19 @@ class EcosphereApplication:
                         age_maximum=random.randint(60, 240),
                         name=f"mushroom",
                         species="mushroom",
+                        images={"image_egg": "seed"},
+                        component_data={
+                            "Aging": {
+                                "is_egg": False,
+                                "is_baby": False,
+                                "age_baby": 60,
+                                "age_adult": 180,
+                            },
+                        },
                     )
+
+                    new_tree.components.append(components.component_age)
+                    new_tree.components.append(components.component_reproduce_asexual)
 
                     propogated_map[col_index][row_index] = Tile(
                         occupant=new_tree,
