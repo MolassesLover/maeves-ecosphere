@@ -219,16 +219,18 @@ def system_reproduce_sexual_direct(
 
 
 def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_map):
-    reproduction_partner = None
+    rate_percentage = simobject_instance.component_data["ReproducingAsexually"][
+        "rate_percentage"
+    ]
+    rate_roll = random.randint(1, 100)
+
+    if rate_roll > (int(100 - round(rate_percentage))):
+        return
 
     if "Aging" in simobject_instance.component_data:
         if simobject_instance.component_data["Aging"]["is_egg"]:
-            print(f"{simobject_instance.name} is too egg to make a baby.")
             return
         if simobject_instance.component_data["Aging"]["is_baby"]:
-            print(
-                f"{simobject_instance.name} is too baby at age {simobject_instance.age_current} to make a baby."
-            )
             return
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
@@ -236,30 +238,29 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
     ):
         if search_tile.occupant:
             if search_tile.occupant == simobject_instance:
-                return
+                continue
             elif not search_tile.occupant.is_dead:
-                return
+                continue
             elif search_tile.occupant.species == simobject_instance.species:
-                return
+                continue
             else:
                 print("Replacing dead occupant with clone")
 
-            break
+                clone = copy.deepcopy(simobject_instance)  # Propogation
 
-    clone = copy.deepcopy(simobject_instance)  # Propogation
+                clone.is_egg = True
+                clone.is_baby = False
+                clone.position = [pos_x, pos_y]
 
-    clone.is_egg = True
-    clone.is_baby = False
+                clone.age_current = 0
 
-    clone.age_current = 0
+                ecosphere_map[pos_x][pos_y].occupant = clone
 
-    ecosphere_map[pos_x][pos_y].occupant = clone
+                if search_tile.metadata["contaminated"]:
+                    print(f"Tile at (x{pos_x}, y{pos_y}) is no longer contaminated")
+                    ecosphere_map[pos_x][pos_y].metadata["contaminated"] = False
 
-    if search_tile.metadata["contaminated"]:
-        print(f"Tile at (x{pos_x}, y{pos_y}) is no longer contaminated")
-        ecosphere_map[pos_x][pos_y].metadata["contaminated"] = False
-
-    print(f"Clone was propogated to (x{pos_x}, y{pos_y})")
+                print(f"Clone was propogated to (x{pos_x}, y{pos_y})")
 
 
 component_forage: dict = create_component(

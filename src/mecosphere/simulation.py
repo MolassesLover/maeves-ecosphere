@@ -32,6 +32,7 @@ class SimulationObject:
         age_maximum=7,
         component_data={},
         images={},
+        position=[],
     ):
         self.age_current = 0
         self.age_maximum = age_maximum
@@ -40,7 +41,12 @@ class SimulationObject:
         self.components: list = components
         self.name = name
         self.species = species
-        self.position = [random.randint(1, 71), random.randint(1, 127)]
+
+        if not position:
+            self.position = [random.randint(1, 71), random.randint(1, 127)]
+        else:
+            self.position = position
+
         self.domain = domain
         self.is_dead = False
 
@@ -85,6 +91,7 @@ class Ecosphere:
             # Old list may contain out of bounds entitities
             # We set self.simulation_objects to this new list in order to remove them
             new_entities_list = []
+            living_entities_count = 0
 
             for tile, col_index, row_index in ecosphere_map_yield_tile(
                 self.map, 128, 72
@@ -116,6 +123,7 @@ class Ecosphere:
                         else:
                             simulation_object.decomposition_current += 1
                     else:
+                        living_entities_count += 1
                         simulation_object.age_current += 1
 
                         if (
@@ -123,6 +131,10 @@ class Ecosphere:
                             and not simulation_object.is_dead
                         ):
                             for component in simulation_object.components:
+                                print(
+                                    f"Running callback for entity {living_entities_count}"
+                                )
+
                                 component["callback"](
                                     simulation_object, component, self.map
                                 )

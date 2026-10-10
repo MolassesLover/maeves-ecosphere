@@ -6,26 +6,32 @@ import pygame
 
 
 def simulation_object_yield_tile_neighbour(_simobject_instance, _ecosphere_map):
-    for x in range(-1, 1):
-        for y in range(-1, 1):
-            check_position_x = _simobject_instance.position[0] + x
-            check_position_y = _simobject_instance.position[1] + y
+    directions = [
+        [-1, 0], # Left
+        [1, 0], # Right
+        [0, 1], # Up
+        [0, -1] # Down
+    ]
 
-            # print(f"Checking {check_position_x}, {check_position_y} for food")
+    for direction in directions:
+        check_position_x = _simobject_instance.position[0] + direction[0]
+        check_position_y = _simobject_instance.position[1] + direction[1]
 
-            if check_position_x > 127:
-                check_position_x = 127
-            elif check_position_x < 0:
-                check_position_x = 0
+        print(f"Checking {check_position_x}, {check_position_y} for food")
 
-            if check_position_x > 71:
-                check_position_x = 71
-            elif check_position_x < 0:
-                check_position_x = 0
+        if check_position_y > 127:
+            check_position_y = 127
+        elif check_position_y < 0:
+            check_position_y = 0
 
-            tile = _ecosphere_map[check_position_x][check_position_y]
+        if check_position_x > 71:
+            check_position_x = 71
+        elif check_position_x < 0:
+            check_position_x = 0
 
-            yield tile, check_position_x, check_position_y
+        tile = _ecosphere_map[check_position_x][check_position_y]
+
+        yield tile, check_position_x, check_position_y
 
 
 def ecosphere_map_yield_tile(ecosphere_map, width: int = 128, height: int = 72):
@@ -58,8 +64,8 @@ def ecosphere_map_generate(width: int = 128, height: int = 72) -> list:
                 new_collumn.append(random.randint(1, 3))
             else:
                 new_collumn.append(0)
-
-                position_y += 1
+            
+            position_y += 1
 
         new_map.append(new_collumn)
 

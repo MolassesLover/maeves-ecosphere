@@ -94,11 +94,15 @@ class EcosphereApplication:
                             "age_baby": 30,
                             "age_adult": 60,
                         },
+                        "ReproducingAsexually": {"rate_percentage": 50},
                     },
+                    position=[col_index, row_index],
                 )
 
                 new_tree.components.append(components.component_age)
                 new_tree.components.append(components.component_reproduce_asexual)
+
+                new_tree.decomposition_maximum = 1000
 
                 propogated_map[col_index][row_index] = Tile(
                     occupant=new_tree,
@@ -124,7 +128,9 @@ class EcosphereApplication:
                             "age_baby": 60,
                             "age_adult": 180,
                         },
+                        "ReproducingAsexually": {"rate_percentage": 80},
                     },
+                    position=[col_index, row_index],
                 )
 
                 new_tree.components.append(components.component_age)
@@ -154,7 +160,9 @@ class EcosphereApplication:
                             "age_baby": 60,
                             "age_adult": 180,
                         },
+                        "ReproducingAsexually": {"rate_percentage": 90},
                     },
+                    position=[col_index, row_index],
                 )
 
                 new_tree.components.append(components.component_age)
