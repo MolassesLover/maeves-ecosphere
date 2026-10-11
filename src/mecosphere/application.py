@@ -193,7 +193,7 @@ class EcosphereApplication:
 
         self.ecosphere.map = propogated_map
 
-        for i in range(100):
+        for i in range(50):
             isopod = SimulationObject(
                 components=[],
                 domain="fauna",

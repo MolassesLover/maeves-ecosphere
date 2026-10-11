@@ -7,18 +7,22 @@ from mecosphere.simulation import *
 
 
 def create_descendant(simobject_instance, new_position) -> SimulationObject:
+    simobject_instance_copy = copy.deepcopy(simobject_instance)
+
     simobject_descendant = SimulationObject(
         name=f"{simobject_instance.name} Jr.",
         species=simobject_instance.species,
         domain=simobject_instance.domain,
-        components=simobject_instance.components,
-        component_data=simobject_instance.component_data,
+        components=simobject_instance_copy.components,
+        component_data=simobject_instance_copy.component_data,
         age_maximum=simobject_instance.age_maximum,
         images=simobject_instance.images,
         position=new_position,
     )
 
     simobject_descendant.age_current = 0
+
+    del simobject_instance_copy
 
     return simobject_descendant
 
