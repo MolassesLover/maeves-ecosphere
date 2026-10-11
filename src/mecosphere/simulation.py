@@ -39,6 +39,7 @@ class SimulationObject:
         self.decomposition_current = 0
         self.decomposition_maximum = int(round(age_maximum / 8))
         self.components: list = components
+        self.images = images
         self.name = name
         self.species = species
 

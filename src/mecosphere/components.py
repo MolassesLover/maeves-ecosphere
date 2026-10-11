@@ -6,6 +6,23 @@ import copy
 from mecosphere.simulation import *
 
 
+def create_descendant(simobject_instance, new_position) -> SimulationObject:
+    simobject_descendant = SimulationObject(
+        name=f"{simobject_instance.name} Jr.",
+        species=simobject_instance.species,
+        domain=simobject_instance.domain,
+        components=simobject_instance.components,
+        component_data=simobject_instance.component_data,
+        age_maximum=simobject_instance.age_maximum,
+        images=simobject_instance.images,
+        position=new_position,
+    )
+
+    simobject_descendant.age_current = 0
+
+    return simobject_descendant
+
+
 def create_component(component_name, callback: callable, is_active=True) -> dict:
     """
     A simple constructor for components as dictionaries. This is not an ECS,
@@ -179,7 +196,7 @@ def system_reproduce_sexual_direct(
                     not search_tile.occupant
                     and not search_tile.metadata["contaminated"]
                 ):
-                    baby = copy.copy(simobject_instance)  # Awww they're so alike
+                    baby = create_descendant(simobject_instance, new_position=[pos_x, pos_y])  # Awww they're so alike
 
                     baby.is_egg = True
                     baby.is_baby = False
@@ -246,11 +263,10 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
             else:
                 print("Replacing dead occupant with clone")
 
-                clone = copy.copy(simobject_instance)  # Propogation
+                clone = create_descendant(simobject_instance, new_position=[pos_x, pos_y])  # Propogation
 
                 clone.is_egg = True
                 clone.is_baby = False
-                clone.position = [pos_x, pos_y]
 
                 clone.age_current = 0
 
