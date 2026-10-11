@@ -50,15 +50,15 @@ class SimulationObject:
         self.domain = domain
         self.is_dead = False
 
-        self.image_default = pygame.image.load(f"res/img/{species}.png")
-        self.image_egg = pygame.image.load(f"res/img/egg.png")
-        self.image_dead = pygame.image.load(f"res/img/{species}-dead.png")
+        self.image_default = pygame.image.load(f"res/img/{species}.bmp")
+        self.image_egg = pygame.image.load(f"res/img/egg.bmp")
+        self.image_dead = pygame.image.load(f"res/img/{species}-dead.bmp")
         self.image_baby = self.image_default
 
         if "image_baby" in images:
-            self.image_baby = pygame.image.load(f"res/img/{images['image_baby']}.png")
+            self.image_baby = pygame.image.load(f"res/img/{images['image_baby']}.bmp")
         elif "image_egg" in images:
-            self.image_egg = pygame.image.load(f"res/img/{images['image_egg']}.png")
+            self.image_egg = pygame.image.load(f"res/img/{images['image_egg']}.bmp")
 
         self.image = self.image_default
 
