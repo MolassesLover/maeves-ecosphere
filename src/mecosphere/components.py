@@ -179,7 +179,7 @@ def system_reproduce_sexual_direct(
                     not search_tile.occupant
                     and not search_tile.metadata["contaminated"]
                 ):
-                    baby = copy.deepcopy(simobject_instance)  # Awww they're so alike
+                    baby = copy.copy(simobject_instance)  # Awww they're so alike
 
                     baby.is_egg = True
                     baby.is_baby = False
@@ -246,7 +246,7 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
             else:
                 print("Replacing dead occupant with clone")
 
-                clone = copy.deepcopy(simobject_instance)  # Propogation
+                clone = copy.copy(simobject_instance)  # Propogation
 
                 clone.is_egg = True
                 clone.is_baby = False
