@@ -219,19 +219,25 @@ def system_reproduce_sexual_direct(
 
 
 def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_map):
+    while_baby = simobject_instance.component_data["ReproducingAsexually"][
+        "while_baby"
+    ]
+
     rate_percentage = simobject_instance.component_data["ReproducingAsexually"][
         "rate_percentage"
     ]
+
     rate_roll = random.randint(1, 100)
 
     if rate_roll > (int(100 - round(rate_percentage))):
         return
 
-    if "Aging" in simobject_instance.component_data:
-        if simobject_instance.component_data["Aging"]["is_egg"]:
-            return
-        if simobject_instance.component_data["Aging"]["is_baby"]:
-            return
+    if not while_baby:
+        if "Aging" in simobject_instance.component_data:
+            if simobject_instance.component_data["Aging"]["is_egg"]:
+                return
+            if simobject_instance.component_data["Aging"]["is_baby"]:
+                return
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
         simobject_instance, ecosphere_map

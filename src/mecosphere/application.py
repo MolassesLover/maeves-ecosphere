@@ -94,7 +94,7 @@ class EcosphereApplication:
                             "age_baby": 180,
                             "age_adult": 356,
                         },
-                        "ReproducingAsexually": {"rate_percentage": 50},
+                        "ReproducingAsexually": {"rate_percentage": 50, "while_baby": False},
                     },
                     position=[col_index, row_index],
                 )
@@ -128,7 +128,7 @@ class EcosphereApplication:
                             "age_baby": 5,
                             "age_adult": 15,
                         },
-                        "ReproducingAsexually": {"rate_percentage": 95},
+                        "ReproducingAsexually": {"rate_percentage": 95, "while_baby": True},
                     },
                     position=[col_index, row_index],
                 )
@@ -160,7 +160,7 @@ class EcosphereApplication:
                             "age_baby": 500,
                             "age_adult": 1000,
                         },
-                        "ReproducingAsexually": {"rate_percentage": 90},
+                        "ReproducingAsexually": {"rate_percentage": 90, "while_baby": True},
                     },
                     position=[col_index, row_index],
                 )
