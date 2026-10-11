@@ -6,12 +6,7 @@ import pygame
 
 
 def simulation_object_yield_tile_neighbour(_simobject_instance, _ecosphere_map):
-    directions = [
-        [-1, 0], # Left
-        [1, 0], # Right
-        [0, 1], # Up
-        [0, -1] # Down
-    ]
+    directions = [[-1, 0], [1, 0], [0, 1], [0, -1]]  # Left  # Right  # Up  # Down
 
     for direction in directions:
         check_position_x = _simobject_instance.position[0] + direction[0]
@@ -61,10 +56,10 @@ def ecosphere_map_generate(width: int = 128, height: int = 72) -> list:
             place_vegetation = bool(random.getrandbits(1))
 
             if place_vegetation:
-                new_collumn.append(random.randint(1, 3))
+                new_collumn.append(random.randint(1, 5))
             else:
                 new_collumn.append(0)
-            
+
             position_y += 1
 
         new_map.append(new_collumn)

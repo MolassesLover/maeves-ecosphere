@@ -91,8 +91,8 @@ class EcosphereApplication:
                         "Aging": {
                             "is_egg": False,
                             "is_baby": False,
-                            "age_baby": 30,
-                            "age_adult": 60,
+                            "age_baby": 180,
+                            "age_adult": 356,
                         },
                         "ReproducingAsexually": {"rate_percentage": 50},
                     },
@@ -113,7 +113,7 @@ class EcosphereApplication:
                 )
 
                 self.ecosphere.simulation_objects.append(new_tree)
-            elif tile == 2:
+            elif tile >= 2 and tile < 5:
                 new_tree = SimulationObject(
                     components=[],
                     domain="flora",
@@ -125,10 +125,10 @@ class EcosphereApplication:
                         "Aging": {
                             "is_egg": False,
                             "is_baby": False,
-                            "age_baby": 60,
-                            "age_adult": 180,
+                            "age_baby": 5,
+                            "age_adult": 15,
                         },
-                        "ReproducingAsexually": {"rate_percentage": 80},
+                        "ReproducingAsexually": {"rate_percentage": 95},
                     },
                     position=[col_index, row_index],
                 )
@@ -145,11 +145,11 @@ class EcosphereApplication:
                 )
 
                 self.ecosphere.simulation_objects.append(new_tree)
-            elif tile == 3:
+            elif tile == 5:
                 new_tree = SimulationObject(
                     components=[],
                     domain="fungus",
-                    age_maximum=random.randint(60, 240),
+                    age_maximum=random.randint(1500, 3000),
                     name=f"mushroom",
                     species="mushroom",
                     images={"image_egg": "seed"},
@@ -157,8 +157,8 @@ class EcosphereApplication:
                         "Aging": {
                             "is_egg": False,
                             "is_baby": False,
-                            "age_baby": 60,
-                            "age_adult": 180,
+                            "age_baby": 500,
+                            "age_adult": 1000,
                         },
                         "ReproducingAsexually": {"rate_percentage": 90},
                     },
@@ -193,7 +193,7 @@ class EcosphereApplication:
 
         self.ecosphere.map = propogated_map
 
-        for i in range(200):
+        for i in range(50):
             isopod = SimulationObject(
                 components=[],
                 domain="fauna",
