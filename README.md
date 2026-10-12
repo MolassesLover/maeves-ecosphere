@@ -31,7 +31,7 @@ ECS implementations where data is stored directly inside of components.
     - Starve to death if too hungry.
     - Produce objects in neighbouring tiles by:
         - Reproducing with partner objects.
-        - Reproducing on their own.
+        - Propogating themselves on their own.
     - Age into different life stages.
     - Die after reaching a certain age.
     - Decompose after death.
