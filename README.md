@@ -18,9 +18,18 @@ ECS architecture. Lastly, `SimulationObject`s also contain a `component_data`
 dictionary which stores data accessed by components, straying from real 
 ECS implementations where data is stored directly inside of components.
 
+## Preview
+
+Below is a screenshot of the simulation after about 1h30m:
+
 ![A screenshot of the Maeve's Ecosphere project depicting various tiles, each one depicting either a tree, grass, mushroom, or an isopod.](/docs/img/screenshot.png)
 
-[YouTube Video](https://youtu.be/FK47rwov3aU)
+Below is a brief glimpse at the early stage of a simulation:
+
+![A looping GIF video depicting the ecosphere, with various isopods foraging, and some vegetation growing.](/docs/img/preview.gif)
+
+If you'd like a more extensive preview, take a look at this
+[YouTube video](https://youtu.be/FK47rwov3aU).
 
 ## Features 
 
