@@ -84,7 +84,7 @@ Image assets under the [`res/img/`](res/img) directory are taken from or
 derivations of Pierre Vandermaesen' 1-bit asset pack,
 found [here](https://pierre-vandermaesen.itch.io/1-bit-16x16-asset-packs).
 
-## Getting Started
+## Obtaining the Application
 ### Nix
 
 Nix is the recommended solution for installing, building, and running. 
@@ -114,12 +114,13 @@ following command should get the job done:
 
 ### Python
 
+Installation is required to run this project without Nix! You may obtain the 
+project from PyPi or install it from the source code directly.
+
 > [!IMPORTANT]  
 > The project currently does not provide any pre-built binaries, as such you
 > may need to install [Cython](https://cython.org/) alongside common C/C++ 
 > compilation utilities.
-
-Installation is required to run this project without Nix!
 
 #### Installing from PyPi
 
