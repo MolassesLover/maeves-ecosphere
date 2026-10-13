@@ -47,7 +47,7 @@ If you'd like a more extensive preview, take a look at this
     - Affect the nutrition of a tile on birth or death.
 
 <details>
-<summary>List of Objects</summary>
+<summary><b>List of Objects</b></summary>
 
 ### Organisms
 #### Trees
