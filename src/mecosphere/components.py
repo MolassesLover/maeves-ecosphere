@@ -6,7 +6,9 @@ import copy
 from mecosphere.simulation import *
 
 
-def create_descendant(simobject_instance, new_position) -> SimulationObject:
+def create_descendant(
+    simobject_instance, new_position, _position_range_width, _position_range_height
+) -> SimulationObject:
     simobject_descendant = SimulationObject(
         name=f"{simobject_instance.name} Jr.",
         species=simobject_instance.species,
@@ -16,6 +18,8 @@ def create_descendant(simobject_instance, new_position) -> SimulationObject:
         age_maximum=simobject_instance.age_maximum,
         images=simobject_instance.images,
         position=new_position,
+        position_range_width=_position_range_width,
+        position_range_height=_position_range_height,
     )
 
     simobject_descendant.age_current = 0
@@ -38,7 +42,9 @@ def create_component(component_name, callback: callable, is_active=True) -> dict
     return component_dictionary
 
 
-def system_age(simobject_instance, component_instance, ecosphere_map):
+def system_age(
+    simobject_instance, component_instance, ecosphere_map, application_settings
+):
     if simobject_instance.is_dead:
         return
 
@@ -62,7 +68,9 @@ def system_age(simobject_instance, component_instance, ecosphere_map):
         simobject_instance.image = simobject_instance.image_default
 
 
-def system_forage(simobject_instance, component_instance, ecosphere_map):
+def system_forage(
+    simobject_instance, component_instance, ecosphere_map, application_settings
+):
     if "Aging" in simobject_instance.component_data:
         if simobject_instance.component_data["Aging"]["is_egg"]:
             return
@@ -80,9 +88,9 @@ def system_forage(simobject_instance, component_instance, ecosphere_map):
         position_new[1] + random.randint(-1, 1),
     ]
 
-    if position_new[0] > 71 or position_new[0] < 0:
+    if position_new[0] > (application_settings.height - 1) or position_new[0] < 0:
         return
-    elif position_new[1] > 127 or position_new[1] < 0:
+    elif position_new[1] > (application_settings.width - 1) or position_new[1] < 0:
         return
     else:
         position_new_tile = ecosphere_map[position_new[0]][position_new[1]]
@@ -95,7 +103,9 @@ def system_forage(simobject_instance, component_instance, ecosphere_map):
         position_new_tile.occupant = simobject_instance
 
 
-def system_eat(simobject_instance, component_instance, ecosphere_map):
+def system_eat(
+    simobject_instance, component_instance, ecosphere_map, application_settings
+):
     def eat():
         if (
             search_tile.occupant.species
@@ -118,7 +128,10 @@ def system_eat(simobject_instance, component_instance, ecosphere_map):
         simobject_instance.component_data[component_instance["name"]]["hunger"] = hunger
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
-        simobject_instance, ecosphere_map
+        simobject_instance,
+        ecosphere_map,
+        width=application_settings.width,
+        height=application_settings.height,
     ):
         if search_tile.occupant:
             if search_tile.occupant == simobject_instance:
@@ -147,7 +160,7 @@ def is_hungry(_simobject_instance):
 
 
 def system_reproduce_sexual_direct(
-    simobject_instance, component_instance, ecosphere_map
+    simobject_instance, component_instance, ecosphere_map, application_settings
 ):
     reproduction_partner = None
 
@@ -168,7 +181,10 @@ def system_reproduce_sexual_direct(
         )
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
-        simobject_instance, ecosphere_map
+        simobject_instance,
+        ecosphere_map,
+        width=application_settings.width,
+        height=application_settings.height,
     ):
         if search_tile.occupant:
             if not search_tile.occupant == simobject_instance:
@@ -190,13 +206,21 @@ def system_reproduce_sexual_direct(
             return
         else:
             for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
-                simobject_instance, ecosphere_map
+                simobject_instance,
+                ecosphere_map,
+                width=application_settings.width,
+                height=application_settings.height,
             ):
                 if (
                     not search_tile.occupant
                     and not search_tile.metadata["contaminated"]
                 ):
-                    baby = create_descendant(simobject_instance, new_position=[pos_x, pos_y])  # Awww they're so alike
+                    baby = create_descendant(
+                        simobject_instance,
+                        new_position=[pos_x, pos_y],
+                        _position_range_width=application_settings.width,
+                        _position_range_height=application_settings.height,
+                    )  # Awww they're so alike
 
                     baby.is_egg = True
                     baby.is_baby = False
@@ -235,10 +259,10 @@ def system_reproduce_sexual_direct(
                     print(f"Baby was born at (x{pos_x}, y{pos_y})")
 
 
-def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_map):
-    while_baby = simobject_instance.component_data["ReproducingAsexually"][
-        "while_baby"
-    ]
+def system_reproduce_asexual(
+    simobject_instance, component_instance, ecosphere_map, application_settings
+):
+    while_baby = simobject_instance.component_data["ReproducingAsexually"]["while_baby"]
 
     rate_percentage = simobject_instance.component_data["ReproducingAsexually"][
         "rate_percentage"
@@ -257,7 +281,10 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
                 return
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
-        simobject_instance, ecosphere_map
+        simobject_instance,
+        ecosphere_map,
+        width=application_settings.width,
+        height=application_settings.height,
     ):
         if search_tile.occupant:
             if search_tile.occupant == simobject_instance:
@@ -269,7 +296,12 @@ def system_reproduce_asexual(simobject_instance, component_instance, ecosphere_m
             else:
                 print("Replacing dead occupant with clone")
 
-                clone = create_descendant(simobject_instance, new_position=[pos_x, pos_y])  # Propogation
+                clone = create_descendant(
+                    simobject_instance,
+                    new_position=[pos_x, pos_y],
+                    _position_range_width=application_settings.width,
+                    _position_range_height=application_settings.height,
+                )  # Propogation
 
                 clone.is_egg = True
                 clone.is_baby = False

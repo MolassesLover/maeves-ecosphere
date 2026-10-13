@@ -28,6 +28,8 @@ class SimulationObject:
         name,
         species,
         domain,
+        position_range_width,
+        position_range_height,
         components: list,
         age_maximum=7,
         component_data={},
@@ -42,9 +44,14 @@ class SimulationObject:
         self.images = images
         self.name = name
         self.species = species
+        self.position_range_width = position_range_width
+        self.position_range_height = position_range_height
 
         if not position:
-            self.position = [random.randint(1, 71), random.randint(1, 127)]
+            self.position = [
+                random.randint(1, self.position_range_height - 1),
+                random.randint(1, self.position_range_width - 1),
+            ]
         else:
             self.position = position
 
@@ -76,7 +83,7 @@ class SimulationObject:
 
 
 class Ecosphere:
-    def __init__(self):
+    def __init__(self, _application_settings):
         self.simulation_objects = (
             []
         )  # Set on every update call, do not change manually.
@@ -85,7 +92,8 @@ class Ecosphere:
         self.bacteria: list = []
         self.viruses: list = []
         self.time = 0.0
-        self.map = ecosphere_map_generate()
+        self.application_settings = _application_settings
+        self.map = ecosphere_map_generate(self.application_settings)
 
     def update(self) -> int:
         if self.simulation_objects:
@@ -95,7 +103,9 @@ class Ecosphere:
             living_entities_count = 0
 
             for tile, col_index, row_index in ecosphere_map_yield_tile(
-                self.map, 128, 72
+                self.map,
+                width=self.application_settings.width,
+                height=self.application_settings.height,
             ):
                 simulation_object = tile.occupant
 
@@ -137,7 +147,10 @@ class Ecosphere:
                                 )
 
                                 component["callback"](
-                                    simulation_object, component, self.map
+                                    simulation_object,
+                                    component,
+                                    self.map,
+                                    self.application_settings,
                                 )
 
             self.simulation_objects = new_entities_list

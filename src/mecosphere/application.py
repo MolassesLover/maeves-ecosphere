@@ -1,3 +1,4 @@
+import argparse
 import sys
 import random
 import time
@@ -9,18 +10,53 @@ from mecosphere.simulation import *
 from mecosphere.tilemap import *
 
 
+def arguments_create() -> Namespace:
+    argument_parser = argparse.ArgumentParser(prog="Maeve's Ecosphere")
+    argument_parser.add_argument(
+        "-x",
+        "--width",
+        default=64,
+        type=int,
+        help="Width in tiles, this value is multiplied by 16 for the display window's width.",
+    )
+    argument_parser.add_argument(
+        "-y",
+        "--height",
+        default=36,
+        type=int,
+        help="Height in tiles, this value is multiplied by 16 for the display window's height.",
+    )
+    arguments = argument_parser.parse_args()
+
+    return arguments
+
+
+class ApplicationSettings:
+    def __init__(self):
+        self.arguments = arguments_create()
+        self.width = self.arguments.width
+        self.height = self.arguments.height
+
+
 class EcosphereApplication:
     def __init__(self):
         self.should_run = True
         self.should_simulate = True
 
+        self.application_settings = ApplicationSettings()
+
         pygame.init()
 
-        self.pygame_display = pygame.display.set_mode((2048, 1152))
+        self.pygame_display = pygame.display.set_mode(
+            (
+                self.application_settings.width * 16,
+                self.application_settings.height * 16,
+            )
+        )
 
         self.tile_dirt = pygame.image.load("res/img/dirt.bmp").convert()
 
-        self.ecosphere = Ecosphere()
+        self.ecosphere = Ecosphere(self.application_settings)
 
         self.initialize()
 
@@ -75,7 +111,9 @@ class EcosphereApplication:
         propogated_map = self.ecosphere.map.copy()
 
         for tile, col_index, row_index in ecosphere_map_yield_tile(
-            self.ecosphere.map, 128, 72
+            self.ecosphere.map,
+            width=self.application_settings.width,
+            height=self.application_settings.height,
         ):
             tile = propogated_map[col_index][row_index]
 
@@ -87,6 +125,8 @@ class EcosphereApplication:
                     name="tree",
                     species="tree",
                     images={"image_egg": "seed"},
+                    position_range_width=self.application_settings.width,
+                    position_range_height=self.application_settings.height,
                     component_data={
                         "Aging": {
                             "is_egg": False,
@@ -94,7 +134,10 @@ class EcosphereApplication:
                             "age_baby": 180,
                             "age_adult": 356,
                         },
-                        "ReproducingAsexually": {"rate_percentage": 50, "while_baby": False},
+                        "ReproducingAsexually": {
+                            "rate_percentage": 50,
+                            "while_baby": False,
+                        },
                     },
                     position=[col_index, row_index],
                 )
@@ -120,6 +163,8 @@ class EcosphereApplication:
                     age_maximum=random.randint(120, 270),
                     name="grass",
                     species="grass",
+                    position_range_width=self.application_settings.width,
+                    position_range_height=self.application_settings.height,
                     images={"image_egg": "seed"},
                     component_data={
                         "Aging": {
@@ -128,7 +173,10 @@ class EcosphereApplication:
                             "age_baby": 5,
                             "age_adult": 15,
                         },
-                        "ReproducingAsexually": {"rate_percentage": 95, "while_baby": True},
+                        "ReproducingAsexually": {
+                            "rate_percentage": 95,
+                            "while_baby": True,
+                        },
                     },
                     position=[col_index, row_index],
                 )
@@ -152,6 +200,8 @@ class EcosphereApplication:
                     age_maximum=random.randint(1500, 3000),
                     name=f"mushroom",
                     species="mushroom",
+                    position_range_width=self.application_settings.width,
+                    position_range_height=self.application_settings.height,
                     images={"image_egg": "seed"},
                     component_data={
                         "Aging": {
@@ -160,7 +210,10 @@ class EcosphereApplication:
                             "age_baby": 500,
                             "age_adult": 1000,
                         },
-                        "ReproducingAsexually": {"rate_percentage": 90, "while_baby": True},
+                        "ReproducingAsexually": {
+                            "rate_percentage": 90,
+                            "while_baby": True,
+                        },
                     },
                     position=[col_index, row_index],
                 )
@@ -200,6 +253,8 @@ class EcosphereApplication:
                 age_maximum=random.randint(913, 1825),
                 name=f"isopod {i}",
                 species="isopod",
+                position_range_width=self.application_settings.width,
+                position_range_height=self.application_settings.height,
                 component_data={
                     "Eating": {
                         "diet": ["grass", "mushroom"],
