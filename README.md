@@ -84,14 +84,29 @@ Image assets under the [`res/img/`](res/img) directory are taken from or
 derivations of Pierre Vandermaesen' 1-bit asset pack,
 found [here](https://pierre-vandermaesen.itch.io/1-bit-16x16-asset-packs).
 
-## Running & Installing
+## Getting Started
 ### Nix
 
-The recommended installation route is with use of Nix. This project provides a Nix 
-flake which can be installed via Home Manager, your NixOS configuration, and
-a plethora of other solutions which support Nix flakes.
+Nix is the recommended solution for installing, building, and running. 
+This project provides a Nix flake which can be installed via Home Manager,
+your NixOS configuration, and a plethora of other projects which support Nix 
+flakes.
 
-Alternatively the project can simply be run without installation using the following command:
+If you would like to run the latest version of the project without installing, 
+it can be fetched and cached using the following command:
+
+```sh
+➜ nix run github:MolassesLover/maeves-ecosphere?ref=v0.1.2
+``` 
+
+The same thing can be done for the latest commit:
+
+```sh
+➜ nix run github:MolassesLover/maeves-ecosphere
+``` 
+
+If you would like to build and run the project from a fetched remote, the
+following command should get the job done:
 
 ```sh
 ➜ nix build .; ./result/result/bin/maeves-ecosphere
@@ -99,10 +114,41 @@ Alternatively the project can simply be run without installation using the follo
 
 ### Python
 
-Installation is required to run this project without Nix.
+> [!IMPORTANT]  
+> The project currently does not provide any pre-built binaries, as such you
+> may need to install [Cython](https://cython.org/) alongside common C/C++ 
+> compilation utilities.
+
+Installation is required to run this project without Nix!
+
+#### Installing from PyPi
+
+The project is available on PyPi [here](https://pypi.org/project/maeves-ecosphere/),
+and can be installed using the below command:
+```sh
+pip install maeves-ecosphere
+```
+
+#### Installing from Source
+
+If you would like to install it from the source, you may need to fetch the
+project's dependencies, which may be done via `pip` or your preferred package
+manager:
 
 ```sh
 ➜ pip install pygame cython
+```
+
+Once installed, the project can be installed using `pip`:
+
+```sh
 ➜ pip install .
+```
+
+#### Running
+
+Once installed, the project can be run via the `mecosphere.cli` entrypoint.
+
+```sh
 ➜ python -m mecosphere.cli
 ```
