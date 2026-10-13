@@ -13,6 +13,12 @@ from mecosphere.tilemap import *
 def arguments_create() -> Namespace:
     argument_parser = argparse.ArgumentParser(prog="Maeve's Ecosphere")
     argument_parser.add_argument(
+        "-c",
+        "--cycles",
+        type=int,
+        help="Limit simulation to a number of cycles.",
+    )
+    argument_parser.add_argument(
         "-x",
         "--width",
         default=64,
@@ -40,9 +46,15 @@ def arguments_create() -> Namespace:
 class ApplicationSettings:
     def __init__(self):
         self.arguments = arguments_create()
-        self.width: int = self.arguments.width
-        self.height: int = self.arguments.height
+
+        if self.arguments.cycles:
+            self.cycles: int = self.arguments.cycles
+        else:
+            self.cycles = -1
+
         self.headless: bool = self.arguments.headless
+        self.height: int = self.arguments.height
+        self.width: int = self.arguments.width
 
 
 class EcosphereApplication:
@@ -107,9 +119,14 @@ class EcosphereApplication:
                 if self.should_simulate:
                     if self.ecosphere.update() == 1:
                         self.should_simulate = False
-                    else:
-                        print(f"Simulation cycle {cycles}\r", end="")
-                        cycles += 1
+                    elif not self.application_settings.cycles == -1:
+                        if cycles >= self.application_settings.cycles:
+                            self.should_simulate = False
+                            self.should_run = False
+
+                    cycles += 1
+
+                    print(f"Simulation cycle {cycles}\r", end="")
 
                     self.tiles_render()
 
@@ -121,7 +138,7 @@ class EcosphereApplication:
             self.should_simulate = False
             self.should_run = False
 
-        print(f"Exited application after {cycles} cycles.")
+        print(f"Exited application after {cycles-1} cycles.")
 
         pygame.quit()
 
@@ -135,13 +152,20 @@ class EcosphereApplication:
                 if self.should_simulate:
                     if self.ecosphere.update() == 1:
                         self.should_simulate = False
-                    else:
-                        print(f"Simulation cycle {cycles}\r", end="")
-                        cycles += 1
+                    elif not self.application_settings.cycles == -1:
+                        if cycles >= self.application_settings.cycles:
+                            self.should_simulate = False
+                            self.should_run = False
+
+                    cycles += 1
+
+                    print(f"Simulation cycle {cycles}\r", end="")
+
         except KeyboardInterrupt:
             print(f"Simulation cycle {cycles}\r", end="")
-            print(f"Exited application after {cycles} cycles.")
             self.should_run = False
+
+        print(f"Exited application after {cycles-1} cycles.")
 
     def start(self):
         if not self.application_settings.headless:
