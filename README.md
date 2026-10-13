@@ -46,6 +46,9 @@ If you'd like a more extensive preview, take a look at this
     - Decompose after death.
     - Affect the nutrition of a tile on birth or death.
 
+<details>
+<summary>List of Objects</summary>
+
 ### Organisms
 #### Trees
 Trees take a significant amount of time to age into adulthood, and
@@ -61,6 +64,8 @@ serve as the main food source for animals.
 
 #### Isopods
 Isopods forage the map, eating and mating with partner isopods when they can.
+
+</details>
 
 ## Cloning
 This project makes use of the [Git LFS](https://git-lfs.com/) extension, please
