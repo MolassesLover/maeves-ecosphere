@@ -1,6 +1,6 @@
 [project]
 name = "maeves-ecosphere"
-version = "0.1.0"
+version = "0.1.2"
 description = "A tile-based procedural ecosystem simulation, with an object component system."
 
 authors = [

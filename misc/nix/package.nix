@@ -6,7 +6,7 @@
 with python314Packages;
 buildPythonApplication {
   pname = "maeves-ecosphere";
-  version = "0.1.0";
+  version = "0.1.2";
 
   buildInputs = [
     cython

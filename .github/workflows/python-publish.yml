@@ -14,8 +14,8 @@ jobs:
           python-version: "3.14"
       - name: Build release distributions
         run: |
-          python -m pip install build --sdist
-          python -m build
+          python -m pip install build
+          python -m build --sdist
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
