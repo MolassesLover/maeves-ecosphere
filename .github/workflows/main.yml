@@ -11,8 +11,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Test run
-      - run: |
-          nix flake build
+        run: |
           nix run . -- -z -c 32768 -x 32 -y 18
           nix run . -- -z -c 8192 -x 64 -y 36
           nix run . -- -z -c 2048 -x 128 -y 72
