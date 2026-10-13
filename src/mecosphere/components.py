@@ -20,6 +20,7 @@ def create_descendant(
         position=new_position,
         position_range_width=_position_range_width,
         position_range_height=_position_range_height,
+        headless=simobject_instance.headless,
     )
 
     simobject_descendant.age_current = 0
@@ -53,19 +54,23 @@ def system_age(
     age_adult = simobject_instance.component_data["Aging"]["age_adult"]
 
     if age_current < age_baby:
-        simobject_instance.image = simobject_instance.image_egg
+        if not application_settings.headless:
+            simobject_instance.image = simobject_instance.image_egg
         simobject_instance.component_data["Aging"]["is_egg"] = True
         simobject_instance.component_data["Aging"]["is_baby"] = False
     elif age_current >= age_adult:
-        simobject_instance.image = simobject_instance.image_default
+        if not application_settings.headless:
+            simobject_instance.image = simobject_instance.image_default
         simobject_instance.component_data["Aging"]["is_egg"] = False
         simobject_instance.component_data["Aging"]["is_baby"] = False
     elif age_current > age_baby and age_current < age_adult:
-        simobject_instance.image = simobject_instance.image_baby
+        if not application_settings.headless:
+            simobject_instance.image = simobject_instance.image_baby
         simobject_instance.component_data["Aging"]["is_egg"] = False
         simobject_instance.component_data["Aging"]["is_baby"] = True
     else:
-        simobject_instance.image = simobject_instance.image_default
+        if not application_settings.headless:
+            simobject_instance.image = simobject_instance.image_default
 
 
 def system_forage(

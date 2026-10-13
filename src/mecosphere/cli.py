@@ -24,7 +24,7 @@ def main():
     application = EcosphereApplication()
 
     try:
-        application.run()
+        application.start()
     except KeyboardInterrupt:
         application.should_run = False
 

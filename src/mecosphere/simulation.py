@@ -35,6 +35,7 @@ class SimulationObject:
         component_data={},
         images={},
         position=[],
+        headless=False,
     ):
         self.age_current = 0
         self.age_maximum = age_maximum
@@ -46,6 +47,7 @@ class SimulationObject:
         self.species = species
         self.position_range_width = position_range_width
         self.position_range_height = position_range_height
+        self.headless = headless
 
         if not position:
             self.position = [
@@ -58,17 +60,20 @@ class SimulationObject:
         self.domain = domain
         self.is_dead = False
 
-        self.image_default = pygame.image.load(f"res/img/{species}.bmp")
-        self.image_egg = pygame.image.load(f"res/img/egg.bmp")
-        self.image_dead = pygame.image.load(f"res/img/{species}-dead.bmp")
-        self.image_baby = self.image_default
+        if not self.headless:
+            self.image_default = pygame.image.load(f"res/img/{species}.bmp")
+            self.image_egg = pygame.image.load(f"res/img/egg.bmp")
+            self.image_dead = pygame.image.load(f"res/img/{species}-dead.bmp")
+            self.image_baby = self.image_default
 
-        if "image_baby" in images:
-            self.image_baby = pygame.image.load(f"res/img/{images['image_baby']}.bmp")
-        elif "image_egg" in images:
-            self.image_egg = pygame.image.load(f"res/img/{images['image_egg']}.bmp")
+            if "image_baby" in images:
+                self.image_baby = pygame.image.load(
+                    f"res/img/{images['image_baby']}.bmp"
+                )
+            elif "image_egg" in images:
+                self.image_egg = pygame.image.load(f"res/img/{images['image_egg']}.bmp")
 
-        self.image = self.image_default
+            self.image = self.image_default
 
         # `self.component_data`` is a dict of component names matched to any other child dict
         # Example:
@@ -78,7 +83,9 @@ class SimulationObject:
 
     def die(self):
         # print(f"{self.name} is now dead.")
-        self.image = self.image_dead
+        if not self.headless:
+            self.image = self.image_dead
+
         self.is_dead = True
 
 

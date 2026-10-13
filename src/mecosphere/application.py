@@ -26,6 +26,12 @@ def arguments_create() -> Namespace:
         type=int,
         help="Height in tiles, this value is multiplied by 16 for the display window's height.",
     )
+    argument_parser.add_argument(
+        "-z",
+        "--headless",
+        action="store_true",
+        help="Height in tiles, this value is multiplied by 16 for the display window's height.",
+    )
     arguments = argument_parser.parse_args()
 
     return arguments
@@ -34,8 +40,9 @@ def arguments_create() -> Namespace:
 class ApplicationSettings:
     def __init__(self):
         self.arguments = arguments_create()
-        self.width = self.arguments.width
-        self.height = self.arguments.height
+        self.width: int = self.arguments.width
+        self.height: int = self.arguments.height
+        self.headless: bool = self.arguments.headless
 
 
 class EcosphereApplication:
@@ -45,16 +52,18 @@ class EcosphereApplication:
 
         self.application_settings = ApplicationSettings()
 
-        pygame.init()
+        if not self.application_settings.headless:
+            pygame.init()
 
-        self.pygame_display = pygame.display.set_mode(
-            (
-                self.application_settings.width * 16,
-                self.application_settings.height * 16,
+            self.pygame_display = pygame.display.set_mode(
+                (
+                    self.application_settings.width * 16,
+                    self.application_settings.height * 16,
+                )
             )
-        )
 
-        self.tile_dirt = pygame.image.load("res/img/dirt.bmp").convert()
+            if not self.application_settings.headless:
+                self.tile_dirt = pygame.image.load("res/img/dirt.bmp").convert()
 
         self.ecosphere = Ecosphere(self.application_settings)
 
@@ -83,7 +92,7 @@ class EcosphereApplication:
             col_index += 1
 
     def run(self):
-        print("Running core loop...")
+        print("Running application!")
 
         while self.should_run:
             self.pygame_display.fill((0, 0, 0))
@@ -103,6 +112,20 @@ class EcosphereApplication:
             # time.sleep(0.1666)
 
         pygame.quit()
+
+    def run_headless(self):
+        print("Running application in headless mode!")
+
+        while self.should_run:
+            if self.should_simulate:
+                if self.ecosphere.update() == 1:
+                    self.should_simulate = False
+
+    def start(self):
+        if not self.application_settings.headless:
+            self.run()
+        else:
+            self.run_headless()
 
     def initialize(self):
         # Propogation
@@ -127,6 +150,7 @@ class EcosphereApplication:
                     images={"image_egg": "seed"},
                     position_range_width=self.application_settings.width,
                     position_range_height=self.application_settings.height,
+                    headless=self.application_settings.headless,
                     component_data={
                         "Aging": {
                             "is_egg": False,
@@ -165,6 +189,7 @@ class EcosphereApplication:
                     species="grass",
                     position_range_width=self.application_settings.width,
                     position_range_height=self.application_settings.height,
+                    headless=self.application_settings.headless,
                     images={"image_egg": "seed"},
                     component_data={
                         "Aging": {
@@ -202,6 +227,7 @@ class EcosphereApplication:
                     species="mushroom",
                     position_range_width=self.application_settings.width,
                     position_range_height=self.application_settings.height,
+                    headless=self.application_settings.headless,
                     images={"image_egg": "seed"},
                     component_data={
                         "Aging": {
@@ -255,6 +281,7 @@ class EcosphereApplication:
                 species="isopod",
                 position_range_width=self.application_settings.width,
                 position_range_height=self.application_settings.height,
+                headless=self.application_settings.headless,
                 component_data={
                     "Eating": {
                         "diet": ["grass", "mushroom"],
@@ -271,7 +298,8 @@ class EcosphereApplication:
                 images={"image_baby": "isopod-baby"},
             )
 
-            isopod.image = isopod.image_baby
+            if not self.application_settings.headless:
+                isopod.image = isopod.image_baby
 
             isopod.components.append(components.component_forage)
             isopod.components.append(components.component_eat)
