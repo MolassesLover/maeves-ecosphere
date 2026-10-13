@@ -92,34 +92,56 @@ class EcosphereApplication:
             col_index += 1
 
     def run(self):
+        cycles: int = 0
+
         print("Running application!")
 
-        while self.should_run:
-            self.pygame_display.fill((0, 0, 0))
+        try:
+            while self.should_run:
+                self.pygame_display.fill((0, 0, 0))
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.should_run = False
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.should_run = False
 
-            if self.should_simulate:
-                if self.ecosphere.update() == 1:
-                    self.should_simulate = False
+                if self.should_simulate:
+                    if self.ecosphere.update() == 1:
+                        self.should_simulate = False
+                    else:
+                        print(f"Simulation cycle {cycles}\r", end="")
+                        cycles += 1
 
-                self.tiles_render()
+                    self.tiles_render()
 
-                pygame.display.flip()
+                    pygame.display.flip()
 
-            # time.sleep(0.1666)
+                # time.sleep(0.1666)
+        except KeyboardInterrupt:
+            print(f"Simulation cycle {cycles}\r", end="")
+            self.should_simulate = False
+            self.should_run = False
+
+        print(f"Exited application after {cycles} cycles.")
 
         pygame.quit()
 
     def run_headless(self):
+        cycles: int = 0
+
         print("Running application in headless mode!")
 
-        while self.should_run:
-            if self.should_simulate:
-                if self.ecosphere.update() == 1:
-                    self.should_simulate = False
+        try:
+            while self.should_run:
+                if self.should_simulate:
+                    if self.ecosphere.update() == 1:
+                        self.should_simulate = False
+                    else:
+                        print(f"Simulation cycle {cycles}\r", end="")
+                        cycles += 1
+        except KeyboardInterrupt:
+            print(f"Simulation cycle {cycles}\r", end="")
+            print(f"Exited application after {cycles} cycles.")
+            self.should_run = False
 
     def start(self):
         if not self.application_settings.headless:

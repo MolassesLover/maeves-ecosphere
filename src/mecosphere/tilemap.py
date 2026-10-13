@@ -14,8 +14,6 @@ def simulation_object_yield_tile_neighbour(
         check_position_x = _simobject_instance.position[0] + direction[0]
         check_position_y = _simobject_instance.position[1] + direction[1]
 
-        print(f"Checking {check_position_x}, {check_position_y} for food")
-
         if check_position_y > (width - 1):
             check_position_y = width - 1
         elif check_position_y < 0:
@@ -25,8 +23,6 @@ def simulation_object_yield_tile_neighbour(
             check_position_x = height - 1
         elif check_position_x < 0:
             check_position_x = 0
-
-        print(f"({check_position_x}, {check_position_y})")
 
         tile = _ecosphere_map[check_position_x][check_position_y]
 

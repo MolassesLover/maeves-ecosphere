@@ -82,7 +82,6 @@ class SimulationObject:
         self.component_data = component_data
 
     def die(self):
-        # print(f"{self.name} is now dead.")
         if not self.headless:
             self.image = self.image_dead
 
@@ -121,15 +120,11 @@ class Ecosphere:
 
                     if simulation_object.age_current > simulation_object.age_maximum:
                         if not simulation_object.is_dead:
-                            # print(f"{simulation_object.name} died.")
-
                             simulation_object.die()  # Messed up, man. :C
                         elif (
                             simulation_object.decomposition_current
                             >= simulation_object.decomposition_maximum
                         ):
-                            # print(f"{simulation_object.name} decomposed.")
-
                             if simulation_object.species == "fauna":
                                 self.map[col_index][row_index].contaminated = True
 
@@ -149,10 +144,6 @@ class Ecosphere:
                             and not simulation_object.is_dead
                         ):
                             for component in simulation_object.components:
-                                print(
-                                    f"Running callback for entity {living_entities_count}"
-                                )
-
                                 component["callback"](
                                     simulation_object,
                                     component,

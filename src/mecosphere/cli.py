@@ -23,10 +23,8 @@ def main():
 
     application = EcosphereApplication()
 
-    try:
-        application.start()
-    except KeyboardInterrupt:
-        application.should_run = False
+    application.start()
+    application.should_run = False
 
 
 if __name__ == "__main__":

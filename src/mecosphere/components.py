@@ -116,7 +116,6 @@ def system_eat(
             search_tile.occupant.species
             in simobject_instance.component_data[component_instance["name"]]["diet"]
         ):
-            print(f"Eating {search_tile.occupant.name}")
             search_tile.occupant.die()
 
     hunger = simobject_instance.component_data[component_instance["name"]]["hunger"]
@@ -171,19 +170,12 @@ def system_reproduce_sexual_direct(
 
     if "Aging" in simobject_instance.component_data:
         if simobject_instance.component_data["Aging"]["is_egg"]:
-            print("Egg")
             return
         elif simobject_instance.component_data["Aging"]["is_baby"]:
-            print("Baby")
             return
 
     if is_hungry(simobject_instance):
-        print(f"{simobject_instance.name} is too hungry to make a baby.")
         return
-    else:
-        print(
-            f"{simobject_instance.component_data['Eating']['hunger']} is ok to make a baby."
-        )
 
     for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
         simobject_instance,
@@ -193,21 +185,12 @@ def system_reproduce_sexual_direct(
     ):
         if search_tile.occupant:
             if not search_tile.occupant == simobject_instance:
-                print("Tile has an occupant")
-
                 if not search_tile.occupant.is_dead:
                     reproduction_partner = search_tile.occupant
                     break
-        else:
-            print("Search tile does not have an occupant")
 
     if reproduction_partner:
-        print(f"Found partner {reproduction_partner.name}")
-
         if is_hungry(reproduction_partner):
-            print(
-                f"Partner of {simobject_instance.name}, {reproduction_partner.name}, is too hungry to make a baby."
-            )
             return
         else:
             for search_tile, pos_x, pos_y in simulation_object_yield_tile_neighbour(
@@ -261,8 +244,6 @@ def system_reproduce_sexual_direct(
                             )
                         )
 
-                    print(f"Baby was born at (x{pos_x}, y{pos_y})")
-
 
 def system_reproduce_asexual(
     simobject_instance, component_instance, ecosphere_map, application_settings
@@ -299,8 +280,6 @@ def system_reproduce_asexual(
             elif search_tile.occupant.species == simobject_instance.species:
                 continue
             else:
-                print("Replacing dead occupant with clone")
-
                 clone = create_descendant(
                     simobject_instance,
                     new_position=[pos_x, pos_y],
@@ -316,10 +295,7 @@ def system_reproduce_asexual(
                 ecosphere_map[pos_x][pos_y].occupant = clone
 
                 if search_tile.metadata["contaminated"]:
-                    print(f"Tile at (x{pos_x}, y{pos_y}) is no longer contaminated")
                     ecosphere_map[pos_x][pos_y].metadata["contaminated"] = False
-
-                print(f"Clone was propogated to (x{pos_x}, y{pos_y})")
 
 
 component_forage: dict = create_component(
